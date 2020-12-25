@@ -68,7 +68,7 @@ foreach ($arFullControlsList as $control)
 		$arResult['CONTROLS'][$control] = 'on';
 }
 
-$arResult['CONTROLS']['SHOW_ALL'] = 'on';
+//$arResult['CONTROLS']['SHOW_ALL'] = 'on';
 
 $arParams['DETAIL_URL_PERSONAL'] = isset($arParams['DETAIL_URL_PERSONAL']) ? $arParams['DETAIL_URL_PERSONAL'] : '/company/personal/user/#USER_ID#/calendar/?EVENT_ID=#EVENT_ID#';
 $arParams['DETAIL_URL_DEPARTMENT'] = isset($arParams['DETAIL_URL_DEPARTMENT']) ? $arParams['DETAIL_URL_DEPARTMENT'] : '/company/structure.php?set_filter_structure=Y&structure_UF_DEPARTMENT=#ID#';
