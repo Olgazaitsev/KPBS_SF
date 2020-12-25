@@ -1,0 +1,5 @@
+<?php
+$MESS['CTS.ADMIN_TTYPE_LIST.ADD_BTN_LABEL'] = 'Add the type of task';
+$MESS['CTS.ADMIN_TTYPE_LIST.NAME_FIELD_LABEL'] = 'Task type name';
+$MESS['CTS.ADMIN_TTYPE_LIST.CODE_FIELD_LABEL'] = 'Symbolic code';
+$MESS['CTS.ADMIN_TTYPE_LIST.SORT_FIELD_LABEL'] = 'Sorting';

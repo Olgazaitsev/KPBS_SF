@@ -1,0 +1,43 @@
+.task-detail {
+    margin-top: 20px;
+}
+
+.contract-table .contract-table-aligned-cell {
+    position: relative;
+    text-align: center;
+    vertical-align: middle;
+}
+
+.contract-table .contract-table-status {
+    width: 30%;
+}
+
+.contract-table .contract-table-status.default,
+.contract-table .contract-table-status.new {
+    background: #d9d9d9;
+}
+
+.contract-table .contract-table-status.accepted,
+.contract-status.new,
+.contract-status.paused {
+    background: #fff2cc;
+}
+
+.contract-table .contract-table-status.progress,
+.contract-status.in_progress {
+    background: #9fc5e8;
+}
+
+.contract-table .contract-table-status.completed,
+.contract-status.approved {
+    background: #d9ead3;
+}
+
+.contract-table .contract-table-status.declined,
+.contract-status.not_approved {
+    background: #f4cccc;
+}
+
+.task-detail-content table.contract-detail-content table.bx-interface-grid tr > td:first-child {
+    width: 50%;
+}

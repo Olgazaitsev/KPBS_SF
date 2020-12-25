@@ -1,0 +1,2 @@
+<?
+$MESS['CONTRACTSTATUSTRIGGER_DEFAULT_CAPTION'] = 'Значение по умолчанию';

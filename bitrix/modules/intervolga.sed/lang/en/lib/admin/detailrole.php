@@ -1,0 +1,12 @@
+<?php
+$MESS['SED.ADMIN_ROLE_DETAIL.LIST_BTN'] = 'Go to the list of roles';
+$MESS['SED.ADMIN_ROLE_DETAIL.PAGE_HEADER'] = 'Edit a role';
+$MESS['SED.ADMIN_ROLE_DETAIL.FIELDS.NAME'] = 'Role name';
+$MESS['SED.ADMIN_ROLE_DETAIL.FIELDS.DEFAULT_USER_ID'] = 'Default user';
+$MESS['SED.ADMIN_ROLE_DETAIL.FIELDS.IS_INITIATOR'] = 'Is the initiator';
+$MESS['SED.ADMIN_ROLE_DETAIL.SAVE_ERROR'] = 'Error saving data: #ERROR_DESC#';
+$MESS['SED.ADMIN_ROLE_DETAIL.ROLE_NOT_FOUND'] = 'Role with this ID was not found';
+$MESS['SED.ADMIN_ROLE_DETAIL.PROCESS_NOT_FOUND'] = 'A route with such an ID could not be found';
+$MESS['SED.ADMIN_ROLE_DETAIL.EMPTY_PROCESS_PARAM'] = 'No route ID specified';
+$MESS['SED.ADMIN_ROLE_DETAIL.YES'] = 'Yes';
+$MESS['SED.ADMIN_ROLE_DETAIL.NO'] = 'No';

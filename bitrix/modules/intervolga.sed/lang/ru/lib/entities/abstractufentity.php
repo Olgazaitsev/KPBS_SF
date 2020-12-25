@@ -1,0 +1,2 @@
+<?php
+$MESS['C.ABSTRACTUFENTITY.CRUD_EXCEPTION'] = 'Ошибка при #ACTION_NAME# элемента';

@@ -1,0 +1,71 @@
+.sed-settings__task-trigger-detail__list-btn:not(:first-child) {
+    margin-left: 20px;
+}
+
+.sed-settings__task-trigger-detail__select option[disabled] {
+    color: #333;
+    font-weight: bold;
+}
+
+#sed-settings__actions-container {
+    background-color: #fff;
+    border: 1px solid #ced7d8;
+    padding: 15px;
+}
+
+#sed-settings__actions-container .sed-settings__action-block {
+    padding: 10px;
+    background-color: #f5f9f9;
+    border: 1px solid;
+    border-color: #c4ced2 #dce7ed #dce7ed;
+}
+
+#sed-settings__actions-container .sed-settings__action-block:not(:first-child) {
+    margin-top: 20px;
+}
+
+#sed-settings__actions-container .sed-settings__action-block-line {
+    padding-bottom: 7px;
+    padding-top: 7px;
+}
+
+#sed-settings__actions-container .sed-settings__action-block-title {
+    border-bottom: 1px solid #000;
+    min-height: 30px;
+}
+
+#sed-settings__actions-container .sed-settings__action-block-remove-btn {
+    float: right;
+    color: #f00;
+}
+
+#sed-settings__actions-container .sed-settings__action-block-line-item:not(:first-child) {
+    margin-left: 10px;
+}
+
+#sed-settings__actions-container .sed-settings__action-block-line-item:first-child {
+    display: inline-block;
+    width: 250px;
+    vertical-align: top;
+    padding-top: 8px;
+}
+
+#sed-settings__actions-container .sed-settings__empty{
+    border-color: #f00;
+}
+
+#sed-settings__actions-container .sed-settings__action-block-line-item textarea {
+    height: 50px;
+    width: calc(100% - 300px);
+}
+
+#sed-settings__actions-container .sed-settings__action-block-line-item select {
+    max-width: calc(100% - 260px);
+}
+
+#sed-settings__actions-container .sed-settings__required:after {
+    display: inline-block;
+    margin-left: 2px;
+    content: '*';
+    color: #ef3124;
+}

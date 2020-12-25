@@ -1,0 +1,8 @@
+<?php
+$MESS['SED.ADMIN_ROLE_LIST.ADD_BTN_LABEL'] = 'Добавить роль';
+$MESS['SED.ADMIN_ROLE_LIST.NAME_FIELD_LABEL'] = 'Название роли';
+$MESS['SED.ADMIN_ROLE_LIST.DEFAULT_USER_FIELD_LABEL'] = 'Пользователь по умолчанию';
+$MESS['SED.ADMIN_ROLE_LIST.IS_INITIATOR_FIELD_LABEL'] = 'Является инициатором';
+$MESS['SED.ADMIN_ROLE_LIST.NO_PROCESS_ID'] = 'Не указан ID маршрута';
+$MESS['SED.ADMIN_ROLE_LIST.YES'] = 'Да';
+$MESS['SED.ADMIN_ROLE_LIST.NO'] = 'Нет';

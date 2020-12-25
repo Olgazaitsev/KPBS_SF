@@ -1,0 +1,4 @@
+<?php
+$MESS['SED.ADMIN_TASK_GROUP_LIST.ADD_BTN_LABEL'] = 'Add task group';
+$MESS['SED.ADMIN_TASK_GROUP_LIST.NAME_FIELD_LABEL'] = 'Task group name';
+$MESS['SED.ADMIN_TASK_GROUP_LIST.NO_PROCESS_ID'] = 'No route ID specified';

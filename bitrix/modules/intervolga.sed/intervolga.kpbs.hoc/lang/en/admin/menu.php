@@ -1,0 +1,18 @@
+<?php
+$MESS["INTERVOLGA_SED.MENU_MAIN"] = "Contracts negotiation";
+$MESS["INTERVOLGA_SED.MENU_TASK_TYPES"] = "Types of tasks";
+$MESS["INTERVOLGA_SED.MENU_PROCESSES"] = "Negotiation routes";
+$MESS["INTERVOLGA_SED.MENU_NEGOTIATIONS"] = "Negotiations";
+$MESS["INTERVOLGA_SED.MENU_HANDLERS"] = "Handlers";
+$MESS["INTERVOLGA_SED.MENU_SETUP_NEGOTIATIONS"] = "Contracts negotiation setup";
+$MESS["INTERVOLGA_SED.MENU_USER_STATUSES"] = "Task types and statuses";
+$MESS["INTERVOLGA_SED.MENU_PARTICIPANTS_ROLES"] = "Participants roles";
+$MESS["INTERVOLGA_SED.MENU_ROUTE_STATUSES"] = "Route statuses";
+
+$MESS["INTERVOLGA_SED.MENU_USED_TASK_TYPES"] = "Tasks types";
+$MESS["INTERVOLGA_SED.MENU_TASK_TYPES"] = "Types of tasks";
+$MESS["INTERVOLGA_SED.MENU_TASK_STATUSES_TRANS"] = "Transitions between task statuses";
+$MESS["INTERVOLGA_SED.MENU_TASK_GROUPS"] = "Task groups";
+$MESS["INTERVOLGA_SED.MENU_CONTRACT_USER_FIELDS"] = "User fields";
+$MESS["INTERVOLGA_SED.MENU_STATUS_CHANGE"] = "Changing status in the task";
+$MESS["INTERVOLGA_SED.MENU_GROUP_STATUS_CHANGE"] = "Changing status in the task group";

@@ -1,0 +1,20 @@
+<?php
+$MESS['SED.ADMIN_DETAIL.MESSAGES.UPDATE.TITLE'] = 'Item successfully updated';
+$MESS['SED.ADMIN_DETAIL.MESSAGES.CREATE.TITLE'] = 'Item successfully created';
+$MESS['SED.ADMIN_DETAIL.MESSAGES.CREATE.BODY'] = 'To edit, go to the <a href="#URL#">following link</a>';
+$MESS['SED.ADMIN_DETAIL.MESSAGES.ERRORS.TITLE'] = 'Error';
+
+$MESS['SED.ADMIN_DETAIL.SAVE_BTN_LABEL'] = 'Save';
+$MESS['SED.ADMIN_DETAIL.CANCEL_BTN_LABEL'] = 'Cancel';
+
+$MESS['SED.ADMIN_DETAIL.FIELD_IS_REQUIRED'] = '"#FIELD#" is required';
+
+$MESS['CTS.ADMIN_DETAIL.MESSAGES.UPDATE.TITLE'] = 'Item successfully updated';
+$MESS['CTS.ADMIN_DETAIL.MESSAGES.CREATE.TITLE'] = 'Item successfully created';
+$MESS['CTS.ADMIN_DETAIL.MESSAGES.CREATE.BODY'] = 'To edit, go to the <a href="#URL#">following link</a>';
+$MESS['CTS.ADMIN_DETAIL.MESSAGES.ERRORS.TITLE'] = 'Error';
+
+$MESS['CTS.ADMIN_DETAIL.SAVE_BTN_LABEL'] = 'Save';
+$MESS['CTS.ADMIN_DETAIL.CANCEL_BTN_LABEL'] = 'Cancel';
+
+$MESS['CTS.ADMIN_DETAIL.FIELD_IS_REQUIRED'] = '"#FIELD#" is required';

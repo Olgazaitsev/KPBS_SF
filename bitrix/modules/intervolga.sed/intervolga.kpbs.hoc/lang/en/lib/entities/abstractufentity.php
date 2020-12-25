@@ -1,0 +1,2 @@
+<?php
+$MESS['C.ABSTRACTUFENTITY.CRUD_EXCEPTION'] = 'Could not #ACTION_NAME# element';

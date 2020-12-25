@@ -1,0 +1,6 @@
+<?php
+$MESS['SET_DET_TRG_TPL.LABEL_ACTIONS'] = 'Actions:';
+$MESS['SET_DET_TRG_TPL.JS_BTN_ADD'] = 'Add';
+$MESS['SET_DET_TRG_TPL.JS_LABEL_ADD'] = 'Add action';
+$MESS['SET_DET_TRG_TPL.JS_BTN_DEL'] = 'Delete';
+$MESS['SET_DET_TRG_TPL.JS_OPTION_EMPTY'] = '(unspecified)';

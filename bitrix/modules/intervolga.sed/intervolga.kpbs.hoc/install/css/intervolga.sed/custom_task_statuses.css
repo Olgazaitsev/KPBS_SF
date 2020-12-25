@@ -1,0 +1,7 @@
+.task-sed-button-hover-mode-shade:hover {
+    filter: brightness(85%);
+}
+
+.task-sed-button-hover-mode-highlight:hover {
+    filter: brightness(110%);
+}

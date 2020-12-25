@@ -1,0 +1,228 @@
+@font-face {
+    font-family: OpenSans-Semibold; 
+    src: url(js/2212.ttf); 
+   }
+   
+ .sticky {
+  position: sticky;
+  top: 0;
+  background: #ffffff;
+} 
+
+.custom_button {
+    color               : #CC0000;
+    background-color    : #fcfcfc;
+	
+    
+}
+    .custom_button:hover {
+        color               : #CC0000;
+		text-decoration		: underline;
+		
+        background-color    : #fcfcfc;
+    }
+    .custom_button:active {
+		text-decoration		: underline;
+        color               : #CC0000;
+        
+    }
+
+
+#tooltip{
+        background:#000;
+        color:#f3f3f3;
+        text-align:center;
+        padding:6px 0;
+        position:absolute;
+        max-width:250px;
+        z-index:9999;
+        display:none;
+        border-radius:3px;
+        box-shadow:4px 4px 8px rgba(0, 0, 0);
+        padding:5px 8px;
+        font-size:12px;
+        text-shadow:none;
+}
+#tooltip:before{
+        position: absolute;
+        width: 0;
+        height: 0;
+        line-height: 0;
+        border: 6px dashed #000;
+        top: -6px;
+        left:15px;
+        border-bottom-style: solid;
+        border-top: none;
+        border-left-color: transparent;
+        border-right-color: transparent;
+        content:'';
+}
+
+#tooltip {
+    background: #f3f3f3;
+    max-width:250px;
+    border-radius: 3px;
+    box-shadow: 0 0 3px #000;
+    color: #000;
+    display: none;
+    font-size: 13px;
+    padding: 3px 8px;
+    position: absolute;
+    text-align: center;
+    text-shadow: none;
+    z-index: 9999;
+}
+
+
+
+button:active, button:focus {
+  background: #d2f368 !important;
+  outline: none !important;
+}
+button::-moz-focus-inner {
+  background: #d2f368 !important;
+  border: 0 !important;
+}
+
+body {
+    color: #7C7A7F;
+    font-family: OpenSans-Semibold, "Helvetica Neue", Arial, Helvetica, sans-serif;
+    font-size: 14px;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    height: 100%;
+    width: auto;
+    margin: 0;
+    padding: 0;
+    overflow-y: scroll;
+}
+
+        .flex {
+  display: flex;
+  flex-direction: column;
+  height: 100vh;
+  overflow: hidden;
+}
+
+body {
+  overflow: hidden;
+  margin: 0;
+  padding: 0
+}
+
+.header {
+  
+}
+
+.h100 {
+  
+  flex-grow: 2;
+  overflow-y: auto;
+}
+
+.footer {
+  
+}
+
+A {
+    color: #545c6a;
+	text-decoration: none; /* Убирает подчеркивание для ссылок */
+   } 
+A:hover { 
+    color: #1058d0;
+	text-decoration: underline; /* Добавляем подчеркивание при наведении курсора на ссылку */
+	
+   }
+   
+ .item {
+    font-style: normal;
+    font-variant-ligatures: normal;
+    font-variant-caps: normal;
+    font-variant-numeric: normal;
+    font-variant-east-asian: normal;
+    font-weight: normal;
+    font-stretch: 1000;
+    font-size: 15px;
+    line-height: 40px;
+    font-family: OpenSans-Semibold, "Helvetica Neue", Arial, Helvetica, sans-serif;
+	
+	} 
+
+.alertm_overlay {    width:100%;    height:100%;    position:fixed;    left:0px;    top:0px;    z-index:99998;    background:rgba(51, 51, 51, 0.82);   display:none;}
+.alertm_all {font-family: Arial;    width:396px;    padding:29px 43px;    border-radius: .25rem;  background:#EEEEEE;    position:fixed;    left:50%;    margin-left:-241px;    top:50%;    z-index:99999;    }
+.alertm_all a {    -webkit-transition: all .2s ease-in-out;    -o-transition: all .2s ease-in-out;    transition: all .2s ease-in-out;    text-decoration: none;    color: #bced22;}
+.alertm_all a:hover {    color: #222;}
+.alertm_h1 {    color: #bced22;    font-size: 19px;    margin-bottom: 15px;}
+.alertm_text {    font-size: 16px;    line-height: 23px;}
+.alertm_wrapper { }
+.alertm_but {    display: inline-block;    font-weight: 700;    line-height: 1.25;    text-align: center;    white-space: nowrap;    vertical-align: middle;    -webkit-user-select: none;    -moz-user-select: none;    -ms-user-select: none;    user-select: none;    border: 1px solid transparent;    padding: 10px;    font-size: 13px; -webkit-transition: all .2s ease-in-out;    -o-transition: all .2s ease-in-out;    transition: all .2s ease-in-out;    color: #5A5A5A;    background-color: #bced22;    border-color: #bced22;    display: block;    margin-top: 25px;    cursor: pointer;}
+.alertm_but:hover {    color: #5A5A5A;    background-color: #d2f368;    border-color: #d2f368;}
+/* input {text-align:right;}*/
+ TD {
+   
+/*   border: 1px solid #DDDDDD; Граница вокруг ячеек */
+    padding: 5px; /* Поля в ячейках */ 
+	
+   }
+ TH {
+   
+/*   border: 1px solid #DDDDDD; Граница вокруг ячеек */
+    padding: 5px; /* Поля в ячейках */ 
+	cursor: pointer;
+	
+   }
+   
+ .table_sort table {
+    border-collapse: collapse;
+}
+
+.table_sort th {
+    color: #ffffff;
+    background: #4a4a4a;
+    cursor: pointer;
+}
+
+.table_sort td,
+.table_sort th {
+	 padding: 5px; /* Поля в ячейках */ 
+  /*  width: 150px;
+    height: 40px;
+    text-align: center;
+    border: 2px solid #846868;*/
+}
+
+.table_sort tbody tr:nth-child(even) {
+    background: #e3e3e3;
+}
+
+th.sorted[data-order="1"],
+th.sorted[data-order="-1"] {
+    position: relative;
+}
+
+th.sorted[data-order="1"]::after,
+th.sorted[data-order="-1"]::after {
+    right: 8px;
+    position: absolute;
+}
+
+th.sorted[data-order="-1"]::after {
+	content: "▼"
+}
+
+th.sorted[data-order="1"]::after {
+	content: "▲"
+}
+.butb24a {
+    font-family: "OpenSans-Bold", "Helvetica Neue", Helvetica, Arial, sans-serif;	
+	border: none;
+	font-size:13.333px;
+	color: #535c69;
+	height: 40px;
+	background: #BCED22;
+   }
+
+.butb24a:active, .butb24a:focus 
+	{ background: #d2f95f;
+	  outline: none;
+	}

@@ -1,0 +1,30 @@
+<?php
+require_once($_SERVER["DOCUMENT_ROOT"]."/include/utility.php");
+
+AddEventHandler('tasks', 'OnBeforeTaskAdd', Array("MyEventsHandler", "my_OnBeforeTaskAdd"));
+class MyEventsHandler
+{
+
+    function my_OnBeforeTaskAdd(&$arFields){
+        if($arFields["UF_CRM_TASK"][0]) {
+            if (substr($arFields["UF_CRM_TASK"][0], 0, 2) == "D_" &&
+                substr($arFields["TITLE"], 0, 3) != 'РОТ') {
+
+                $dealId = substr($arFields["UF_CRM_TASK"][0], 2, strlen($arFields["UF_CRM_TASK"][0]));
+                $potNo = Utility::GetUserFieldValueByLabel("РОТ №", "CRM_DEAL", $dealId);
+                if($potNo && $potNo != '')
+                    $arFields["TITLE"] = substr($potNo, 3, strlen($potNo)) . ":" . $arFields["TITLE"];
+            }
+            if (substr($arFields["UF_CRM_TASK"][0], 0, 3) == "CO_" &&
+                substr($arFields["TITLE"], 0, 3) != 'ACC') {
+
+                $companyId = substr($arFields["UF_CRM_TASK"][0], 3, strlen($arFields["UF_CRM_TASK"][0]));
+                $accNo = Utility::GetUserFieldValueByLabel("Номер", "CRM_COMPANY", $companyId);
+                if($accNo && $accNo != '')
+                    $arFields["TITLE"] = $accNo . ":" . $arFields["TITLE"];
+            }
+        }
+    }
+}
+
+
