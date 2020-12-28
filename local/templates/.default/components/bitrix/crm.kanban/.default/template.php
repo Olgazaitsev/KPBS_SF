@@ -20,6 +20,12 @@ Loc::loadMessages(__FILE__);
 
 $this->addExternalCss('/bitrix/themes/.default/crm-entity-show.css');
 
+//echo "<pre>";
+//print_r($arResult);
+//echo "</pre>";
+
+
+
 $bodyClass = $APPLICATION->getPageProperty("BodyClass");
 $APPLICATION->setPageProperty("BodyClass",
 	($bodyClass ? $bodyClass." " : "").

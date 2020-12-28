@@ -97,3 +97,5 @@ foreach ($FIELDS_ACCESS_DENIED as $fs) {
     }
 }
 // !!!*******************************
+
+//$arResult['ITEMS']['columns'][7]['canAddItem'] = 0;

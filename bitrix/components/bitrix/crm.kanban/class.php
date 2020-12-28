@@ -26,6 +26,7 @@ use \Bitrix\Sale;
 use \Bitrix\Rest\Marketplace;
 // !!! **********************************************************************
 require_once($_SERVER["DOCUMENT_ROOT"]."/include/kpbs_fields_settings.php");
+require_once($_SERVER["DOCUMENT_ROOT"]."/include/utility.php");
 // !!! **********************************************************************
 
 class CrmKanbanComponent extends \CBitrixComponent

@@ -187,6 +187,7 @@ endif;
 
 // Настройка полей - те, кто в массиве будут видеть поля
 require_once($_SERVER["DOCUMENT_ROOT"]."/include/kpbs_fields_settings.php");
+require_once($_SERVER["DOCUMENT_ROOT"]."/include/utility.php");
 $userId = CUser::GetID();
 $userGroups = CUser::GetUserGroup($userId);
 $FIELDS_ACCESS_DENIED = $GLOBALS["FIELDS_ACCESS_DENIED"];

@@ -1,6 +1,6 @@
 <?php
 require_once($_SERVER["DOCUMENT_ROOT"]."/include/utility.php");
-
+//require($_SERVER["DOCUMENT_ROOT"]."/include/utility.php");
 AddEventHandler('tasks', 'OnBeforeTaskAdd', Array("MyEventsHandler", "my_OnBeforeTaskAdd"));
 AddEventHandler('tasks', 'OnTaskAdd', Array("MyEventsHandler", "my_OnTaskAdd"));
 AddEventHandler('crm', 'OnBeforeCrmDealUpdate', Array("MyEventsHandler", "my_OnBeforeCrmDealUpdate"));
