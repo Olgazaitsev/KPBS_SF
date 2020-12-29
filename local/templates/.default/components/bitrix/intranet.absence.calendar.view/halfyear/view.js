@@ -117,7 +117,28 @@ JCCalendarViewHalfyear.prototype.changeMonth = function(dir)
 {
 	//if (dir != -1) dir = 1;
 
-	this.SETTINGS.DATE_START.setMonth(this.SETTINGS.DATE_START.getMonth() + dir);
+	var halfyear;
+	halfyear = this.SETTINGS.DATE_START.getMonth() + dir;
+
+	if(dir == 1) {
+		if (halfyear == 1 || halfyear == 2 || halfyear == 3 || halfyear == 4 || halfyear == 5) {
+			halfyear = 6;
+		} else if (halfyear == 7 || halfyear == 8 || halfyear == 9 || halfyear == 10 || halfyear == 11) {
+			halfyear = 12;
+		}
+	} else {
+		if (halfyear == -1) {
+			//quarter = -1;
+			this.SETTINGS.DATE_START.setMonth(halfyear, 1)
+			halfyear = 6;
+		} else if (halfyear == 7 || halfyear == 8 || halfyear == 9 || halfyear == 10 || halfyear == 11) {
+			halfyear = 6;
+		} else if (halfyear == 1 || halfyear == 2 || halfyear == 3 || halfyear == 4 || halfyear == 5) {
+			halfyear = 0;
+		}
+	}
+
+	this.SETTINGS.DATE_START.setMonth(halfyear, 1);
 
 	this.SETTINGS.DATE_FINISH = new Date(this.SETTINGS.DATE_START);
 	this.SETTINGS.DATE_FINISH.setMonth(this.SETTINGS.DATE_FINISH.getMonth() + 1)
@@ -174,7 +195,9 @@ JCCalendarViewHalfyear.prototype.__drawLayout = function()
 		'<td class="bx-calendar-month-control-text"><a href="javascript:void(0)" class="bx-calendar-month-change1">' + this._parent.MONTHS[cur_m-1 < 0 ? cur_m+11 : cur_m-1] + '</a></td>' +
 		'<td><a href="javascript:void(0)" class="bx-calendar-month-icon bx-calendar-month-back"></a></td>' +
 		'<td class="bx-calendar-month-control-text">' +
-		this._parent.MONTHS[this.SETTINGS.DATE_START.getMonth()] + ', ' + this.SETTINGS.DATE_START.getFullYear() +
+		//this._parent.MONTHS[this.SETTINGS.DATE_START.getMonth()] + ', ' + this.SETTINGS.DATE_START.getFullYear() +
+		this.get2Quarter(this.SETTINGS.DATE_START) + ' полугодие, ' + this.SETTINGS.DATE_START.getFullYear() +
+		//this.getHalfyear(this.SETTINGS.DATE_START) + ' полугодие, ' + this.SETTINGS.DATE_START.getFullYear() +
 		'</td>' +
 		'<td><a href="javascript:void(0)" class="bx-calendar-month-icon bx-calendar-month-fwd"></a></td>' +
 		'<td class="bx-calendar-month-control-text"><a href="javascript:void(0)" class="bx-calendar-month-change1">' + this._parent.MONTHS[cur_m+1 > 11 ? cur_m-11 : cur_m+1] + '</a></td>' +
@@ -460,4 +483,10 @@ JCCalendarViewHalfyear.prototype.__drawData = function()
 			this.obPageBar.appendChild(page_link);
 		}
 	}
+}
+
+JCCalendarViewHalfyear.prototype.get2Quarter = function(d) {
+	d = d || new Date();
+	var m = Math.floor(d.getMonth()/6) + 1;
+	return m > 2? m - 2 : m;
 }

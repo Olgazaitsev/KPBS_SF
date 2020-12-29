@@ -174,7 +174,8 @@ JCCalendarViewYear.prototype.__drawLayout = function()
 		'<td class="bx-calendar-month-control-text"><a href="javascript:void(0)" class="bx-calendar-month-change1">' + this._parent.MONTHS[cur_m-1 < 0 ? cur_m+11 : cur_m-1] + '</a></td>' +
 		'<td><a href="javascript:void(0)" class="bx-calendar-month-icon bx-calendar-month-back"></a></td>' +
 		'<td class="bx-calendar-month-control-text">' +
-		this._parent.MONTHS[this.SETTINGS.DATE_START.getMonth()] + ', ' + this.SETTINGS.DATE_START.getFullYear() +
+		//this._parent.MONTHS[this.SETTINGS.DATE_START.getMonth()] + ', ' + this.SETTINGS.DATE_START.getFullYear() +
+		+ this.SETTINGS.DATE_START.getFullYear() +
 		'</td>' +
 		'<td><a href="javascript:void(0)" class="bx-calendar-month-icon bx-calendar-month-fwd"></a></td>' +
 		'<td class="bx-calendar-month-control-text"><a href="javascript:void(0)" class="bx-calendar-month-change1">' + this._parent.MONTHS[cur_m+1 > 11 ? cur_m-11 : cur_m+1] + '</a></td>' +
@@ -185,12 +186,12 @@ JCCalendarViewYear.prototype.__drawLayout = function()
 	//var arLinks = obRow.cells[0].getElementsByTagName('A');
 	var arLinks = this._parent.CONTROLS.DATEROW.getElementsByTagName('A');
 	//arLinks[0].onclick = function() {_this.changeYear(-1)}
-	arLinks[0].onclick = function() {_this.changeMonth(-2)}
-	arLinks[1].onclick = function() {_this.changeMonth(-1)}
-	arLinks[2].onclick = function() {_this.changeMonth(-1)}
-	arLinks[3].onclick = function() {_this.changeMonth(1)}
-	arLinks[4].onclick = function() {_this.changeMonth(1)}
-	arLinks[5].onclick = function() {_this.changeMonth(2)}
+	arLinks[0].onclick = function() {_this.changeYear(-2)}
+	arLinks[1].onclick = function() {_this.changeYear(-1)}
+	arLinks[2].onclick = function() {_this.changeYear(-1)}
+	arLinks[3].onclick = function() {_this.changeYear(1)}
+	arLinks[4].onclick = function() {_this.changeYear(1)}
+	arLinks[5].onclick = function() {_this.changeYear(2)}
 	//arLinks[3].onclick = function() {_this.changeYear(1)}
 
 	// generate dating cols

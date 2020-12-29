@@ -116,11 +116,49 @@ JCCalendarViewQuarter.prototype.LoadData = function(DATA)
 JCCalendarViewQuarter.prototype.changeMonth = function(dir)
 {
 	//if (dir != -1) dir = 1;
+	// здесь устанавливаем дату квартала
+	console.log(dir)
 
-	this.SETTINGS.DATE_START.setMonth(this.SETTINGS.DATE_START.getMonth() + dir);
+	var quarter;
+	quarter = this.SETTINGS.DATE_START.getMonth() + dir;
+
+	console.log(quarter)
+
+	if(dir == 1) {
+		 if (quarter == 1 || quarter == 2) {
+			 quarter = 3;
+		 } else if (quarter == 4 || quarter == 5) {
+			 quarter = 6;
+		 } else if (quarter == 7 || quarter == 8) {
+			 quarter = 9;
+		 } else if (quarter == 10 || quarter == 11) {
+			 quarter = 12;
+		 }
+	} else {
+		if (quarter == -1) {
+			//quarter = -1;
+			this.SETTINGS.DATE_START.setMonth(quarter, 1)
+			quarter = 9;
+		} else if (quarter == 10 || quarter == 11) {
+			quarter = 9;
+		} else if (quarter == 7 || quarter == 8) {
+			quarter = 6;
+		} else if (quarter == 5 || quarter == 4) {
+			quarter = 3;
+		} else if (quarter == 1 || quarter == 2) {
+			quarter = 0;
+		}
+	}
+	console.log(quarter)
+
+	//this.SETTINGS.DATE_START.setMonth(this.SETTINGS.DATE_START.getMonth() + dir);
+	this.SETTINGS.DATE_START.setMonth(quarter, 1)
 
 	this.SETTINGS.DATE_FINISH = new Date(this.SETTINGS.DATE_START);
 	this.SETTINGS.DATE_FINISH.setMonth(this.SETTINGS.DATE_FINISH.getMonth() + 1)
+
+	console.log(this.SETTINGS.DATE_START)
+	console.log(this.SETTINGS.DATE_FINISH)
 
 	this.Load();
 }
@@ -174,7 +212,8 @@ JCCalendarViewQuarter.prototype.__drawLayout = function()
 		'<td class="bx-calendar-month-control-text"><a href="javascript:void(0)" class="bx-calendar-month-change1">' + this._parent.MONTHS[cur_m-1 < 0 ? cur_m+11 : cur_m-1] + '</a></td>' +
 		'<td><a href="javascript:void(0)" class="bx-calendar-month-icon bx-calendar-month-back"></a></td>' +
 		'<td class="bx-calendar-month-control-text">' +
-		this._parent.MONTHS[this.SETTINGS.DATE_START.getMonth()] + ', ' + this.SETTINGS.DATE_START.getFullYear() +
+		//this._parent.MONTHS[this.SETTINGS.DATE_START.getMonth()] + ', ' + this.SETTINGS.DATE_START.getFullYear() +
+		this.getQuarter(this.SETTINGS.DATE_START) + ' квартал, ' + this.SETTINGS.DATE_START.getFullYear() +
 		'</td>' +
 		'<td><a href="javascript:void(0)" class="bx-calendar-month-icon bx-calendar-month-fwd"></a></td>' +
 		'<td class="bx-calendar-month-control-text"><a href="javascript:void(0)" class="bx-calendar-month-change1">' + this._parent.MONTHS[cur_m+1 > 11 ? cur_m-11 : cur_m+1] + '</a></td>' +
@@ -460,4 +499,11 @@ JCCalendarViewQuarter.prototype.__drawData = function()
 			this.obPageBar.appendChild(page_link);
 		}
 	}
+}
+
+
+JCCalendarViewQuarter.prototype.getQuarter = function(d) {
+	d = d || new Date();
+	var m = Math.floor(d.getMonth()/3) + 1;
+	return m > 4? m - 4 : m;
 }
