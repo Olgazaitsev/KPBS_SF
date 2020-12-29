@@ -1,0 +1,30 @@
+<?php
+class Utility
+{
+
+    public function GetUserFieldValueByLabel($fieldLabel, $entityType, $entityId)
+    {
+        $connection = Bitrix\Main\Application::getConnection();
+        $sqlHelper = $connection->getSqlHelper();
+        $sql = "SELECT DISTINCT f.FIELD_NAME FROM b_user_field_lang l JOIN b_user_field f on f.ID = l.USER_FIELD_ID WHERE l.LIST_COLUMN_LABEL = '" . $fieldLabel . "' and f.ENTITY_ID='CRM_DEAL'";
+        $recordset = $connection->query($sql);
+
+        if ($record = $recordset->fetch()) {
+            global $USER_FIELD_MANAGER;
+            $value = $USER_FIELD_MANAGER->GetUserFieldValue($entityType, $record['FIELD_NAME'], $entityId);
+            return $value;
+        }
+    }
+	
+	public function GetDealsCount(){
+		$connection = Bitrix\Main\Application::getConnection();
+        $sqlHelper = $connection->getSqlHelper();
+        $sql = "SELECT COUNT(*) AS COUNT FROM b_crm_deal;";
+        $recordset = $connection->query($sql);
+
+        if ($record = $recordset->fetch()) {
+            $value = $record['COUNT'];
+            return $value;
+        }
+	}	
+}
