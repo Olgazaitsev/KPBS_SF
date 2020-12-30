@@ -58,8 +58,20 @@ JCCalendarViewQuarter.prototype.SetSettings = function (SETTINGS)
 
 	if (null == this.SETTINGS.DATE_START || today >= this.SETTINGS.DATE_START && today <= this.SETTINGS.DATE_FINISH)
 		this.SETTINGS.DATE_START = today
-
-	this.SETTINGS.DATE_START.setDate(1);
+	console.log('setsettings');
+	var quaters;
+	quarters = this.SETTINGS.DATE_START.getMonth();
+	if (quarters == 10 || quarters == 11) {
+		quarters = 9;
+	} else if (quarters == 7 || quarters == 8) {
+		quarters = 6;
+	} else if (quarters == 5 || quarters == 4) {
+		quarters = 3;
+	} else if (quarters == 1 || quarters == 2) {
+		quarters = 0;
+	}
+	this.SETTINGS.DATE_START.setMonth(quarters, 1)
+	//this.SETTINGS.DATE_START.setDate(1);
 	this.SETTINGS.DATE_START.setHours(0);
 	this.SETTINGS.DATE_START.setMinutes(0);
 	this.SETTINGS.DATE_START.setSeconds(0);
@@ -236,20 +248,14 @@ JCCalendarViewQuarter.prototype.__drawLayout = function()
 	var startMonth = this.SETTINGS.DATE_START.getMonth();
 	var cur_date = new Date(this.SETTINGS.DATE_START.valueOf());
 	var bDayViewRegistered = this._parent.isViewRegistered('day');
-	while (cur_date.getMonth() == startMonth)
-	{
+	var bMonthViewRegistered = this._parent.isViewRegistered('month');
+	var cur_quarter = this.getQuarter(cur_date);
+	while (this.getQuarter(cur_date) == cur_quarter) {
 		var obCell = obRow.insertCell(-1);
-
 		obCell.className = 'bx-calendar-month-day';
-
-		if (cur_date.valueOf() == today.valueOf())
-			obCell.className += ' bx-calendar-month-today';
-		if (cur_date.getDay() == 0 || cur_date.getDay() == 6)
-			obCell.className += ' bx-calendar-month-holiday';
-
-		var cur_day = '' + cur_date.getDate();
-		if (cur_day < 10) cur_day = '0' + cur_day;
-		if (bDayViewRegistered)
+		obCell.className += ' bx-calendar-month-today';
+		var cur_month = this._parent.MONTHS[cur_date.getMonth()];
+		if(bMonthViewRegistered)
 		{
 			var obLink = obCell.appendChild(document.createElement('A'));
 			obLink.href = "javascript:void(0)";
@@ -258,18 +264,14 @@ JCCalendarViewQuarter.prototype.__drawLayout = function()
 			{
 				_this.SETTINGS.DATE_START = this.BX_DAY;
 				_this.SETTINGS.DATE_FINISH = this.BX_DAY;
-				_this._parent.SetView('day');
+				_this._parent.SetView('month');
 			}
-
-			obLink.innerHTML = cur_day;
-		}
-		else
-		{
-			obCell.innerHTML = cur_day;
+			obLink.innerHTML = cur_month;
+		} else {
+			obCell.innerHTML = cur_month;
 		}
 
-
-		cur_date.setDate(cur_date.getDate() + 1);
+		cur_date.setMonth(cur_date.getMonth() + 1);
 	}
 
 	this._parent.CONTROLS.CALENDAR.appendChild(document.createElement('BR'));
