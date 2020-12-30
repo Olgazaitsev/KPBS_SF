@@ -8,7 +8,7 @@ function JCCalendarViewMonth()
 
 	if (!window._MONTH_STYLE_LOADED)
 	{
-		BX.loadCSS('/bitrix/components/bitrix/intranet.absence.calendar.view/templates/month/view.css');
+		BX.loadCSS('/local/templates/.default/components/bitrix/intranet.absence.calendar.view/month/view.css');
 		window._MONTH_STYLE_LOADED = true;
 	}
 
