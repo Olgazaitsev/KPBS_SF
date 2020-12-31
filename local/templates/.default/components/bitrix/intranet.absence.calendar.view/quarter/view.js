@@ -44,6 +44,8 @@ JCCalendarViewQuarter.prototype.Load = function()
 
 	this.TYPE_BGCOLORS = this._parent.TYPE_BGCOLORS;
 
+	console.log(this.SETTINGS.DATE_FINISH)
+
 	this._parent.LoadData(
 		this.SETTINGS.DATE_START,
 		this.SETTINGS.DATE_FINISH
@@ -78,7 +80,7 @@ JCCalendarViewQuarter.prototype.SetSettings = function (SETTINGS)
 	this.SETTINGS.DATE_START.setMilliseconds(0);
 
 	this.SETTINGS.DATE_FINISH = new Date(this.SETTINGS.DATE_START.valueOf());
-	this.SETTINGS.DATE_FINISH.setMonth(this.SETTINGS.DATE_FINISH.getMonth()+1, 1);
+	this.SETTINGS.DATE_FINISH.setMonth(this.SETTINGS.DATE_FINISH.getMonth()+3, 1);
 }
 
 JCCalendarViewQuarter.prototype.Unload = function()
@@ -167,7 +169,7 @@ JCCalendarViewQuarter.prototype.changeMonth = function(dir)
 	this.SETTINGS.DATE_START.setMonth(quarter, 1)
 
 	this.SETTINGS.DATE_FINISH = new Date(this.SETTINGS.DATE_START);
-	this.SETTINGS.DATE_FINISH.setMonth(this.SETTINGS.DATE_FINISH.getMonth() + 1)
+	this.SETTINGS.DATE_FINISH.setMonth(this.SETTINGS.DATE_FINISH.getMonth() + 3)
 
 	console.log(this.SETTINGS.DATE_START)
 	console.log(this.SETTINGS.DATE_FINISH)
@@ -298,7 +300,7 @@ JCCalendarViewQuarter.prototype.__drawData = function()
 	var startMonth = this.SETTINGS.DATE_START.getMonth();
 	var date_start = this.SETTINGS.DATE_START;
 	var date_finish = new Date(date_start);
-	date_finish.setMonth(date_finish.getMonth() + 1);
+	date_finish.setMonth(date_finish.getMonth() + 3);
 	date_finish.setSeconds(date_finish.getSeconds() - 1);
 
 	for (var i = 0; i < (null == this.ENTRIES ? 0 : this.ENTRIES.length); i++)
@@ -356,29 +358,41 @@ JCCalendarViewQuarter.prototype.__drawData = function()
 		today.setMinutes(0);
 		today.setSeconds(0);
 		today.setMilliseconds(0);
+		var cur_quarternew = this.getQuarter(tmp_date);
 
-		while (tmp_date.getMonth() == startMonth)
-		{
+		while (this.getQuarter(tmp_date) == cur_quarternew) {
 			var obCell = obRow.insertCell(-1);
 			obCell.title = obNameContainer.title;
 			obCell.className = 'bx-calendar-month-day';
-
-			if (tmp_date.valueOf() == today.valueOf())
-				obCell.className += ' bx-calendar-month-today';
-			if (tmp_date.getDay() == 0 || tmp_date.getDay() == 6)
-				obCell.className += ' bx-calendar-month-holiday';
-
 			if (BX.browser.IsIE())
 				obCell.innerHTML = '&nbsp;';
 
-			tmp_date.setDate(tmp_date.getDate() + 1);
+			tmp_date.setMonth(tmp_date.getMonth() + 1);
+
 		}
+
 	}
 
-	var padding = 2, obPos, startOffset, finishOffset, start_pos, finish_pos, width;
+	var padding = 2, obPos, startOffset, finishOffset, start_pos, finish_pos, width, obFirstcell, ofFirstpos, leftFirst, allWidth, dateDiffer;
+
+	dateDiffer = this.dateDiffer(date_finish, date_start);
+
+	console.log(dateDiffer);
+
+
 	for (var i = 0; i < (null == this.ENTRIES ? 0 : this.ENTRIES.length); i++)
 	{
 		var obUserRow = BX('bx_calendar_user_' + this.ENTRIES[i]['ID']);
+
+		obFirstcell = obUserRow.cells[1];
+		ofFirstpos = BX.pos(obFirstcell, true);
+		leftFirst = parseInt(ofFirstpos.left);
+		allWidth = parseInt(ofFirstpos.width)*3;
+
+		console.log(leftFirst);
+		console.log(allWidth);
+
+
 
 		if (obUserRow && this.ENTRIES[i]['DATA'])
 		{
@@ -388,6 +402,14 @@ JCCalendarViewQuarter.prototype.__drawData = function()
 			{
 				var ts_start = this.ENTRIES[i]['DATA'][j]['DATE_ACTIVE_FROM'],
 					ts_finish = this.ENTRIES[i]['DATA'][j]['DATE_ACTIVE_TO'];
+
+				if(ts_start.valueOf()<date_start.valueOf()) {
+					ts_start = date_start;
+				}
+
+				if(ts_finish.valueOf()>date_finish.valueOf()) {
+					ts_finish = date_finish;
+				}
 
 				this.ENTRIES[i]['DATA'][j].VISUAL = document.createElement('DIV');
 
@@ -406,10 +428,14 @@ JCCalendarViewQuarter.prototype.__drawData = function()
 
 				this.ENTRIES[i]['DATA'][j].VISUAL.style.top = (obRowPos.top) + 'px';
 
+				//console.log(obUserRow);
+
 				var obStartCell = obUserRow.cells[date_start.valueOf() < ts_start.valueOf() ? ts_start.getDate() : date_start.getDate()];
 				var obFinishCell = obUserRow.cells[date_finish.valueOf() < ts_finish.valueOf() ? date_finish.getDate() : ts_finish.getDate()];
 
 				obPos = BX.pos(obStartCell, true);
+				//console.log(obPos);
+
 				start_pos = parseInt(obPos.left);
 
 				startOffset = ts_start.getSeconds() + (ts_start.getMinutes() + ts_start.getHours() * 60) * 60;
@@ -439,8 +465,16 @@ JCCalendarViewQuarter.prototype.__drawData = function()
 
 				width = Math.abs(finish_pos - start_pos - (BX.browser.IsIE() ? padding * 2 : padding));
 
+
+
+				width = ((this.dateDiffer(ts_finish, ts_start) / dateDiffer) * allWidth);
+				start_pos = leftFirst + ((this.dateDiffer(ts_start, date_start) / dateDiffer) * allWidth);
 				this.ENTRIES[i]['DATA'][j].VISUAL.style.left = parseInt(start_pos) + 'px';
-				this.ENTRIES[i]['DATA'][j].VISUAL.style.width = (isNaN(width) || width < 20 ? '20' : width) + 'px';
+				this.ENTRIES[i]['DATA'][j].VISUAL.style.width = parseInt(width) + 'px';
+
+
+				//this.ENTRIES[i]['DATA'][j].VISUAL.style.left = parseInt(start_pos) + 'px';
+				//this.ENTRIES[i]['DATA'][j].VISUAL.style.width = (isNaN(width) || width < 20 ? '20' : width) + 'px';
 				this.ENTRIES[i]['DATA'][j].VISUAL.style.height = parseInt(obPos.height - padding) + 'px';
 
 				this._parent.MAIN_LAYOUT.appendChild(this.ENTRIES[i]['DATA'][j].VISUAL);
@@ -508,4 +542,9 @@ JCCalendarViewQuarter.prototype.getQuarter = function(d) {
 	d = d || new Date();
 	var m = Math.floor(d.getMonth()/3) + 1;
 	return m > 4? m - 4 : m;
+}
+
+JCCalendarViewQuarter.prototype.dateDiffer = function(date1, date2) {
+	var daysLag = Math.ceil(Math.abs(date2.getTime() - date1.getTime()) / (1000 * 3600 * 24));
+	return daysLag;
 }
