@@ -308,22 +308,20 @@ JCCalendarViewYear.prototype.__drawData = function()
 		today.setSeconds(0);
 		today.setMilliseconds(0);
 
-		while (tmp_date.getMonth() == startMonth)
-		{
+		var cur_yearnew = tmp_date.getFullYear();
+
+		while (tmp_date.getFullYear() == cur_yearnew) {
 			var obCell = obRow.insertCell(-1);
 			obCell.title = obNameContainer.title;
 			obCell.className = 'bx-calendar-month-day';
-
-			if (tmp_date.valueOf() == today.valueOf())
-				obCell.className += ' bx-calendar-month-today';
-			if (tmp_date.getDay() == 0 || tmp_date.getDay() == 6)
-				obCell.className += ' bx-calendar-month-holiday';
-
 			if (BX.browser.IsIE())
 				obCell.innerHTML = '&nbsp;';
 
-			tmp_date.setDate(tmp_date.getDate() + 1);
+			tmp_date.setMonth(tmp_date.getMonth() + 1);
+
 		}
+
+
 	}
 
 	var padding = 2, obPos, startOffset, finishOffset, start_pos, finish_pos, width;
