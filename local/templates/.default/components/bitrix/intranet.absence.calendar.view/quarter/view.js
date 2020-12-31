@@ -44,7 +44,7 @@ JCCalendarViewQuarter.prototype.Load = function()
 
 	this.TYPE_BGCOLORS = this._parent.TYPE_BGCOLORS;
 
-	console.log(this.SETTINGS.DATE_FINISH)
+	//console.log(this.SETTINGS.DATE_FINISH)
 
 	this._parent.LoadData(
 		this.SETTINGS.DATE_START,
@@ -60,7 +60,7 @@ JCCalendarViewQuarter.prototype.SetSettings = function (SETTINGS)
 
 	if (null == this.SETTINGS.DATE_START || today >= this.SETTINGS.DATE_START && today <= this.SETTINGS.DATE_FINISH)
 		this.SETTINGS.DATE_START = today
-	console.log('setsettings');
+	//console.log('setsettings');
 	var quaters;
 	quarters = this.SETTINGS.DATE_START.getMonth();
 	if (quarters == 10 || quarters == 11) {
@@ -131,12 +131,12 @@ JCCalendarViewQuarter.prototype.changeMonth = function(dir)
 {
 	//if (dir != -1) dir = 1;
 	// здесь устанавливаем дату квартала
-	console.log(dir)
+	//console.log(dir)
 
 	var quarter;
 	quarter = this.SETTINGS.DATE_START.getMonth() + dir;
 
-	console.log(quarter)
+	//console.log(quarter)
 
 	if(dir == 1) {
 		 if (quarter == 1 || quarter == 2) {
@@ -163,7 +163,7 @@ JCCalendarViewQuarter.prototype.changeMonth = function(dir)
 			quarter = 0;
 		}
 	}
-	console.log(quarter)
+	//console.log(quarter)
 
 	//this.SETTINGS.DATE_START.setMonth(this.SETTINGS.DATE_START.getMonth() + dir);
 	this.SETTINGS.DATE_START.setMonth(quarter, 1)
@@ -171,8 +171,8 @@ JCCalendarViewQuarter.prototype.changeMonth = function(dir)
 	this.SETTINGS.DATE_FINISH = new Date(this.SETTINGS.DATE_START);
 	this.SETTINGS.DATE_FINISH.setMonth(this.SETTINGS.DATE_FINISH.getMonth() + 3)
 
-	console.log(this.SETTINGS.DATE_START)
-	console.log(this.SETTINGS.DATE_FINISH)
+	//console.log(this.SETTINGS.DATE_START)
+	//console.log(this.SETTINGS.DATE_FINISH)
 
 	this.Load();
 }
@@ -373,11 +373,11 @@ JCCalendarViewQuarter.prototype.__drawData = function()
 
 	}
 
-	var padding = 2, obPos, startOffset, finishOffset, start_pos, finish_pos, width, obFirstcell, ofFirstpos, leftFirst, allWidth, dateDiffer;
+	var padding = 2, obPos, startOffset, finishOffset, start_pos, finish_pos, width, obFirstcell, ofFirstpos, leftFirst, allWidth, dateDiffer, height;
 
 	dateDiffer = this.dateDiffer(date_finish, date_start);
 
-	console.log(dateDiffer);
+	//console.log(dateDiffer);
 
 
 	for (var i = 0; i < (null == this.ENTRIES ? 0 : this.ENTRIES.length); i++)
@@ -388,9 +388,9 @@ JCCalendarViewQuarter.prototype.__drawData = function()
 		ofFirstpos = BX.pos(obFirstcell, true);
 		leftFirst = parseInt(ofFirstpos.left);
 		allWidth = parseInt(ofFirstpos.width)*3;
+		height = parseInt(ofFirstpos.height)
 
-		console.log(leftFirst);
-		console.log(allWidth);
+
 
 
 
@@ -436,34 +436,7 @@ JCCalendarViewQuarter.prototype.__drawData = function()
 				obPos = BX.pos(obStartCell, true);
 				//console.log(obPos);
 
-				start_pos = parseInt(obPos.left);
 
-				startOffset = ts_start.getSeconds() + (ts_start.getMinutes() + ts_start.getHours() * 60) * 60;
-				if (startOffset > 16 * 60 * 60)
-				{
-					start_pos = parseInt(obPos.right);
-				}
-				else if (startOffset > 8 * 60 * 60)
-				{
-					start_pos = Math.round(parseInt(obPos.right) / 2 + parseInt(obPos.left) / 2);
-				}
-
-				if (obStartCell != obFinishCell)
-					obPos = BX.pos(obFinishCell, true);
-
-				finish_pos = parseInt(obPos.right);
-
-				finishOffset = ts_finish.getSeconds() + (ts_finish.getMinutes() + ts_finish.getHours() * 60) * 60;
-				if (finishOffset < 8 * 60 * 60)
-				{
-					finish_pos = parseInt(obPos.left);
-				}
-				else if (finishOffset < 16 * 60 * 60)
-				{
-					finish_pos = Math.round(parseInt(obPos.right) / 2 + parseInt(obPos.left) / 2);
-				}
-
-				width = Math.abs(finish_pos - start_pos - (BX.browser.IsIE() ? padding * 2 : padding));
 
 
 
@@ -475,7 +448,8 @@ JCCalendarViewQuarter.prototype.__drawData = function()
 
 				//this.ENTRIES[i]['DATA'][j].VISUAL.style.left = parseInt(start_pos) + 'px';
 				//this.ENTRIES[i]['DATA'][j].VISUAL.style.width = (isNaN(width) || width < 20 ? '20' : width) + 'px';
-				this.ENTRIES[i]['DATA'][j].VISUAL.style.height = parseInt(obPos.height - padding) + 'px';
+				//this.ENTRIES[i]['DATA'][j].VISUAL.style.height = parseInt(obPos.height - padding) + 'px';
+				this.ENTRIES[i]['DATA'][j].VISUAL.style.height = parseInt(height) + 'px';
 
 				this._parent.MAIN_LAYOUT.appendChild(this.ENTRIES[i]['DATA'][j].VISUAL);
 				this._parent.RegisterEntry(this.ENTRIES[i].DATA[j]);

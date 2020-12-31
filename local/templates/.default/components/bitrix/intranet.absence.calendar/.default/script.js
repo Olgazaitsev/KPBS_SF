@@ -134,8 +134,8 @@ var jsBXAC = {
 	{
 		if (!this.bInitFinished)
 			return false;
-		console.log(obHandler);
-		console.log(this.CURRENT_VIEW);
+		//console.log(obHandler);
+		//console.log(this.CURRENT_VIEW);
 		if (null == obHandler || null == obHandler.ID)
 			return this.__showError('ERR_WRONG_HANDLER');
 
@@ -151,7 +151,7 @@ var jsBXAC = {
 
 			this.CURRENT_VIEW_HANDLER.SetSettings && this.CURRENT_VIEW_HANDLER.SetSettings(this.SETTINGS);
 			this.CURRENT_VIEW_HANDLER.Load && this.CURRENT_VIEW_HANDLER.Load();
-			console.log(this.CURRENT_VIEW_HANDLER); 
+			//console.log(this.CURRENT_VIEW_HANDLER);
 		}
 	},
 

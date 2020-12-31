@@ -66,7 +66,7 @@ JCCalendarViewYear.prototype.SetSettings = function (SETTINGS)
 	this.SETTINGS.DATE_START.setMilliseconds(0);
 
 	this.SETTINGS.DATE_FINISH = new Date(this.SETTINGS.DATE_START.valueOf());
-	this.SETTINGS.DATE_FINISH.setMonth(this.SETTINGS.DATE_FINISH.getMonth()+1, 1);
+	this.SETTINGS.DATE_FINISH.setMonth(this.SETTINGS.DATE_FINISH.getMonth()+12, 1);
 }
 
 JCCalendarViewYear.prototype.Unload = function()
@@ -131,7 +131,7 @@ JCCalendarViewYear.prototype.changeYear = function(dir)
 
 	this.SETTINGS.DATE_START.setYear(this.SETTINGS.DATE_START.getFullYear() + dir);
 	this.SETTINGS.DATE_FINISH = new Date(this.SETTINGS.DATE_START);
-	this.SETTINGS.DATE_FINISH.setMonth(this.SETTINGS.DATE_FINISH.getMonth() + 1)
+	this.SETTINGS.DATE_FINISH.setMonth(this.SETTINGS.DATE_FINISH.getMonth() + 12)
 
 	this.Load();
 }
@@ -249,7 +249,7 @@ JCCalendarViewYear.prototype.__drawData = function()
 	var startMonth = this.SETTINGS.DATE_START.getMonth();
 	var date_start = this.SETTINGS.DATE_START;
 	var date_finish = new Date(date_start);
-	date_finish.setMonth(date_finish.getMonth() + 1);
+	date_finish.setMonth(date_finish.getMonth() + 12);
 	date_finish.setSeconds(date_finish.getSeconds() - 1);
 
 	for (var i = 0; i < (null == this.ENTRIES ? 0 : this.ENTRIES.length); i++)
@@ -324,10 +324,20 @@ JCCalendarViewYear.prototype.__drawData = function()
 
 	}
 
-	var padding = 2, obPos, startOffset, finishOffset, start_pos, finish_pos, width;
+	var padding = 2, obPos, startOffset, finishOffset, start_pos, finish_pos, width, obFirstcell, ofFirstpos, leftFirst, allWidth, dateDiffer, height;
+
+    dateDiffer = this.dateDiffer(date_finish, date_start);
+
+
 	for (var i = 0; i < (null == this.ENTRIES ? 0 : this.ENTRIES.length); i++)
 	{
 		var obUserRow = BX('bx_calendar_user_' + this.ENTRIES[i]['ID']);
+
+        obFirstcell = obUserRow.cells[1];
+        ofFirstpos = BX.pos(obFirstcell, true);
+        leftFirst = parseInt(ofFirstpos.left);
+        allWidth = parseInt(ofFirstpos.width)*12;
+        height = parseInt(ofFirstpos.height);
 
 		if (obUserRow && this.ENTRIES[i]['DATA'])
 		{
@@ -337,6 +347,14 @@ JCCalendarViewYear.prototype.__drawData = function()
 			{
 				var ts_start = this.ENTRIES[i]['DATA'][j]['DATE_ACTIVE_FROM'],
 					ts_finish = this.ENTRIES[i]['DATA'][j]['DATE_ACTIVE_TO'];
+
+                if(ts_start.valueOf()<date_start.valueOf()) {
+                    ts_start = date_start;
+                }
+
+                if(ts_finish.valueOf()>date_finish.valueOf()) {
+                    ts_finish = date_finish;
+                }
 
 				this.ENTRIES[i]['DATA'][j].VISUAL = document.createElement('DIV');
 
@@ -355,43 +373,16 @@ JCCalendarViewYear.prototype.__drawData = function()
 
 				this.ENTRIES[i]['DATA'][j].VISUAL.style.top = (obRowPos.top) + 'px';
 
-				var obStartCell = obUserRow.cells[date_start.valueOf() < ts_start.valueOf() ? ts_start.getDate() : date_start.getDate()];
-				var obFinishCell = obUserRow.cells[date_finish.valueOf() < ts_finish.valueOf() ? date_finish.getDate() : ts_finish.getDate()];
 
-				obPos = BX.pos(obStartCell, true);
-				start_pos = parseInt(obPos.left);
 
-				startOffset = ts_start.getSeconds() + (ts_start.getMinutes() + ts_start.getHours() * 60) * 60;
-				if (startOffset > 16 * 60 * 60)
-				{
-					start_pos = parseInt(obPos.right);
-				}
-				else if (startOffset > 8 * 60 * 60)
-				{
-					start_pos = Math.round(parseInt(obPos.right) / 2 + parseInt(obPos.left) / 2);
-				}
-
-				if (obStartCell != obFinishCell)
-					obPos = BX.pos(obFinishCell, true);
-
-				finish_pos = parseInt(obPos.right);
-
-				finishOffset = ts_finish.getSeconds() + (ts_finish.getMinutes() + ts_finish.getHours() * 60) * 60;
-				if (finishOffset < 8 * 60 * 60)
-				{
-					finish_pos = parseInt(obPos.left);
-				}
-				else if (finishOffset < 16 * 60 * 60)
-				{
-					finish_pos = Math.round(parseInt(obPos.right) / 2 + parseInt(obPos.left) / 2);
-				}
-
-				width = Math.abs(finish_pos - start_pos - (BX.browser.IsIE() ? padding * 2 : padding));
+                width = ((this.dateDiffer(ts_finish, ts_start) / dateDiffer) * allWidth);
+                start_pos = leftFirst + ((this.dateDiffer(ts_start, date_start) / dateDiffer) * allWidth);
 
 				this.ENTRIES[i]['DATA'][j].VISUAL.style.left = parseInt(start_pos) + 'px';
-				this.ENTRIES[i]['DATA'][j].VISUAL.style.width = (isNaN(width) || width < 20 ? '20' : width) + 'px';
-				this.ENTRIES[i]['DATA'][j].VISUAL.style.height = parseInt(obPos.height - padding) + 'px';
-
+                this.ENTRIES[i]['DATA'][j].VISUAL.style.width = parseInt(width) + 'px';
+				//this.ENTRIES[i]['DATA'][j].VISUAL.style.width = (isNaN(width) || width < 20 ? '20' : width) + 'px';
+				//this.ENTRIES[i]['DATA'][j].VISUAL.style.height = parseInt(obPos.height - padding) + 'px';
+                this.ENTRIES[i]['DATA'][j].VISUAL.style.height = parseInt(height) + 'px';
 				this._parent.MAIN_LAYOUT.appendChild(this.ENTRIES[i]['DATA'][j].VISUAL);
 				this._parent.RegisterEntry(this.ENTRIES[i].DATA[j]);
 			}
@@ -450,4 +441,9 @@ JCCalendarViewYear.prototype.__drawData = function()
 			this.obPageBar.appendChild(page_link);
 		}
 	}
+}
+
+JCCalendarViewYear.prototype.dateDiffer = function(date1, date2) {
+    var daysLag = Math.ceil(Math.abs(date2.getTime() - date1.getTime()) / (1000 * 3600 * 24));
+    return daysLag;
 }
