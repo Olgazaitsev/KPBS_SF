@@ -6,11 +6,11 @@ function JCCalendarViewQuarter()
 	this.SETTINGS = {};
 	this.ENTRIES = [];
 
-	if (!window._MONTH_STYLE_LOADED)
-	{
+	//if (!window._MONTH_STYLE_LOADED)
+	//{
 		BX.loadCSS('/local/templates/.default/components/bitrix/intranet.absence.calendar.view/month/view.css');
-		window._MONTH_STYLE_LOADED = true;
-	}
+	//	window._MONTH_STYLE_LOADED = true;
+	//}
 
 
 	BX.bind(window, 'resize', BX.proxy(this.__onresize, this));
@@ -201,7 +201,8 @@ JCCalendarViewQuarter.prototype.__drawLayout = function()
 	this._parent.CONTROLS.CALENDAR.innerHTML = '';
 
 	this.obTable = document.createElement('TABLE');
-	this.obTable.className = 'bx-calendar-month-main-table';
+	this.obTable.className = 'bx-calendar-period-main-table';
+	//this.obTable.setAttribute('table-layout', 'fixed');
 	this.obTable.setAttribute('cellSpacing', '0');
 
 	this._parent.CONTROLS.CALENDAR.appendChild(this.obTable);

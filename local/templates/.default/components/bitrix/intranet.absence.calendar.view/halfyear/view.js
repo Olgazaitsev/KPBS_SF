@@ -179,7 +179,7 @@ JCCalendarViewHalfyear.prototype.__drawLayout = function()
 	this._parent.CONTROLS.CALENDAR.innerHTML = '';
 
 	this.obTable = document.createElement('TABLE');
-	this.obTable.className = 'bx-calendar-month-main-table';
+	this.obTable.className = 'bx-calendar-period-main-table';
 	this.obTable.setAttribute('cellSpacing', '0');
 
 	this._parent.CONTROLS.CALENDAR.appendChild(this.obTable);
