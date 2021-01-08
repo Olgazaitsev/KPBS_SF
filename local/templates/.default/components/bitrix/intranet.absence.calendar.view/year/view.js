@@ -6,11 +6,11 @@ function JCCalendarViewYear()
 	this.SETTINGS = {};
 	this.ENTRIES = [];
 
-	if (!window._MONTH_STYLE_LOADED)
-	{
+	//if (!window._MONTH_STYLE_LOADED)
+	//{
 		BX.loadCSS('/local/templates/.default/components/bitrix/intranet.absence.calendar.view/month/view.css');
 		window._MONTH_STYLE_LOADED = true;
-	}
+	//}
 
 
 	BX.bind(window, 'resize', BX.proxy(this.__onresize, this));
