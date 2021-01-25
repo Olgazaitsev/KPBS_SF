@@ -39,7 +39,7 @@ SetSettings(SETTINGS) - recieve global settings
 
 JCCalendarViewMonth.prototype.Load = function()
 {
-	console.log("here")
+	//console.log("here")
 	this._parent.FILTER.SHORT_EVENTS = 'N';
 
 	if (null != this.ENTRIES && this.ENTRIES.length > 0) this.UnloadData();
@@ -257,7 +257,7 @@ JCCalendarViewMonth.prototype.__drawLayout = function()
 JCCalendarViewMonth.prototype.__drawData = function()
 {
 	var _this = this;
-	console.log("here");
+	//console.log("here");
 
 	var startMonth = this.SETTINGS.DATE_START.getMonth();
 	var date_start = this.SETTINGS.DATE_START;

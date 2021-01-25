@@ -298,14 +298,14 @@ JCCalendarViewQuarter.prototype.__drawLayout = function()
 JCCalendarViewQuarter.prototype.__drawData = function()
 {
 	var _this = this;
-	console.log(this._parent.FILTER.USERS_ALL)
+	//console.log(this._parent.FILTER.USERS_ALL)
 	var startMonth = this.SETTINGS.DATE_START.getMonth();
 	var date_start = this.SETTINGS.DATE_START;
 	var date_finish = new Date(date_start);
 	date_finish.setMonth(date_finish.getMonth() + 3);
 	date_finish.setSeconds(date_finish.getSeconds() - 1);
 
-	console.log(this.ENTRIES)
+	//console.log(this.ENTRIES)
 
 	for (var i = 0; i < (null == this.ENTRIES ? 0 : this.ENTRIES.length); i++)
 	{
