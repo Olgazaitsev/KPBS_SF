@@ -134,8 +134,8 @@ var jsBXAC = {
 	{
 		if (!this.bInitFinished)
 			return false;
-		//console.log(obHandler);
-		//console.log(this.CURRENT_VIEW);
+		console.log(obHandler);
+		console.log(this);
 		if (null == obHandler || null == obHandler.ID)
 			return this.__showError('ERR_WRONG_HANDLER');
 
@@ -157,6 +157,7 @@ var jsBXAC = {
 
 	SetDataFilter: function(field, value)
 	{
+
 		if (null == value)
 		{
 			delete this.FILTER[field];
@@ -167,6 +168,7 @@ var jsBXAC = {
 		}
 
 		if (null != this.CURRENT_VIEW_HANDLER.Load)
+			console.log(this.FILTER)
 			this.CURRENT_VIEW_HANDLER.Load();
 	},
 
@@ -224,7 +226,7 @@ var jsBXAC = {
 			+ '&calendar_iblock_id=' + this.SETTINGS.CALENDAR_IBLOCK_ID
 			+ '&sessid=' + BX.message('bitrix_sessid')
 			+ '&rnd=' + Math.random();
-
+		console.log("load");
 		BX.loadScript(url);
 	},
 
@@ -388,12 +390,30 @@ var jsBXAC = {
 
 		if (null != this.SETTINGS.CONTROLS.SHOW_ALL)
 		{
-			this.CONTROLS.SHOW_ALL = document.createElement('INPUT');
-			this.CONTROLS.SHOW_ALL.type = 'checkbox';
-			this.CONTROLS.SHOW_ALL.checked = true;
-			this.CONTROLS.SHOW_ALL.defaultChecked = true;
+			var arraysel = ["Только отсутствующие","Только присутствующие","Все сотрудники"];
+			this.CONTROLS.SHOW_ALL = document.createElement('select');
+			for (var i = 0; i < arraysel.length; i++) {
+				var option = document.createElement("option");
+				if(i==0) {
+					option.value = 'N';
+				} else if(i==1) {
+					option.value = 'A';
+				} else {
+					option.value = 'Y';
+				}
+				option.text = arraysel[i];
+				this.CONTROLS.SHOW_ALL.appendChild(option);
+			}
 
-			this.CONTROLS.SHOW_ALL.onclick = function() {_this.SetDataFilter('USERS_ALL', this.checked ? 'N' : 'Y')};
+			//this.CONTROLS.SHOW_ALL.onchange = function() {console.log(this.value)}
+			this.CONTROLS.SHOW_ALL.onchange = function() {_this.SetDataFilter('USERS_ALL', this.value)}
+
+				/*this.CONTROLS.SHOW_ALL = document.createElement('INPUT');
+                this.CONTROLS.SHOW_ALL.type = 'checkbox';
+                this.CONTROLS.SHOW_ALL.checked = true;
+                this.CONTROLS.SHOW_ALL.defaultChecked = true;
+
+                this.CONTROLS.SHOW_ALL.onclick = function() {_this.SetDataFilter('USERS_ALL', this.checked ? 'N' : 'Y')};*/
 
 			this.TOOLBAR.BXAddControl(this.MESSAGES.IAC_FILTER_SHOW_ALL, this.CONTROLS.SHOW_ALL);
 		}

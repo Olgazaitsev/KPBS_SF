@@ -34,8 +34,12 @@ UnloadData() - method running when it's needed to clear absences data. this meth
 SetSettings(SETTINGS) - recieve global settings
 */
 
+//const promise = new Promise((resolve,reject)=>setTimeout(() => {console.log(1);reject("2");},1000));
+//promise.then((result)=>console.log(2)).catch((result)=>console.lgo(3))
+
 JCCalendarViewMonth.prototype.Load = function()
 {
+	console.log("here")
 	this._parent.FILTER.SHORT_EVENTS = 'N';
 
 	if (null != this.ENTRIES && this.ENTRIES.length > 0) this.UnloadData();
@@ -253,6 +257,7 @@ JCCalendarViewMonth.prototype.__drawLayout = function()
 JCCalendarViewMonth.prototype.__drawData = function()
 {
 	var _this = this;
+	console.log("here");
 
 	var startMonth = this.SETTINGS.DATE_START.getMonth();
 	var date_start = this.SETTINGS.DATE_START;

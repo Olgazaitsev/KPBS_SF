@@ -150,7 +150,7 @@ if ($arParams['AJAX_CALL'] == 'DATA')
 	$arParams['DEPARTMENT'] = $arParams['DEPARTMENT'] ? intval($arParams['DEPARTMENT']) : 0;
 
 	$arParams['SHORT_EVENTS'] = $arParams['SHORT_EVENTS'] == 'N' ? 'N' : 'Y';
-	$arParams['USERS_ALL'] = $arParams['USERS_ALL'] == 'Y' ? 'Y' : 'N';
+	//$arParams['USERS_ALL'] = $arParams['USERS_ALL'] == 'Y' ? 'Y' : 'N';
 
 	$arResult['ERROR_CODE'] = '';
 	if ($arParams['CALLBACK'] == '')
@@ -183,22 +183,24 @@ if ($arParams['AJAX_CALL'] == 'DATA')
 			}
 		}
 
-		$arIBlockElements = CIntranetUtils::GetAbsenceData(
-			array(
-				'CALENDAR_IBLOCK_ID' => $arParams['CALENDAR_IBLOCK_ID'],
-				'ABSENCE_IBLOCK_ID' => $arParams['IBLOCK_ID'],
-				'DATE_START' => ConvertTimeStamp($arParams['TS_START'], 'FULL'),
-				'DATE_FINISH' => ConvertTimeStamp($arParams['TS_FINISH'], 'FULL'),
-				'USERS' => false,
-				'PER_USER' => true,
-			), $MODE
-		);
 
-		$arUserIDs = array_keys($arIBlockElements);
+		//if($arParams['USERS_ALL'] != 'A') {
+			$arIBlockElements = CIntranetUtils::GetAbsenceData(
+				array(
+					'CALENDAR_IBLOCK_ID' => $arParams['CALENDAR_IBLOCK_ID'],
+					'ABSENCE_IBLOCK_ID' => $arParams['IBLOCK_ID'],
+					'DATE_START' => ConvertTimeStamp($arParams['TS_START'], 'FULL'),
+					'DATE_FINISH' => ConvertTimeStamp($arParams['TS_FINISH'], 'FULL'),
+					'USERS' => false,
+					'PER_USER' => true,
+				), $MODE
+			);
 
+			$arUserIDs = array_keys($arIBlockElements);
+		//}
 
-
-		if ($arParams['USERS_ALL'] == 'Y' || count($arUserIDs) > 0)
+		//if ($arParams['USERS_ALL'] == 'Y' || $arParams['USERS_ALL'] == 'A')
+		if ($arParams['USERS_ALL'] == 'Y' || $arParams['USERS_ALL'] == 'A' || count($arUserIDs) > 0)
 		{
 			$bExtranetInstalled = CModule::IncludeModule('extranet');
 			$bExtranetSite = false || ($bExtranetInstalled && CExtranet::IsExtranetSite($arParams['SITE_ID']));
@@ -238,7 +240,13 @@ if ($arParams['AJAX_CALL'] == 'DATA')
 				$allUserIds = array_unique($allUserIds);
 			}
 
-			$arUserIDs = $arParams['USERS_ALL'] == 'Y' ? $allUserIds : array_intersect($allUserIds, $arUserIDs);
+			if($arParams['USERS_ALL'] == 'Y' || $arParams['USERS_ALL'] == 'A') {
+				$arUserIDs = $allUserIds;
+			} else {
+				$arUserIDs = array_intersect($allUserIds, $arUserIDs);
+			}
+
+			//$arUserIDs = $arParams['USERS_ALL'] == 'Y' ? $allUserIds : array_intersect($allUserIds, $arUserIDs);
 
 			if (count($arUserIDs) > 0 && $bExtranetSite)
 			{
@@ -332,6 +340,16 @@ if ($arParams['AJAX_CALL'] == 'DATA')
 					elseif(is_array($arUsers[$arUser['ID']]['DATA']))
 						$arUsers[$arUser['ID']]['DATA'] = array_values($arUsers[$arUser['ID']]['DATA']);
 				}
+
+				if($arParams['USERS_ALL']=='A') {
+					foreach ($arUsers as $key => $user) {
+						if($user['DATA']) {
+							//\Bitrix\Main\Diag\Debug::writeToFile($user, "post", "__miros.log");
+							unset($arUsers[$key]);
+						}
+					}
+				}
+
 
 				$arResult['USERS'] = array_filter($arUsers);
 			}
