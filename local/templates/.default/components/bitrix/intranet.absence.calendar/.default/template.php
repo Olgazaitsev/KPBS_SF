@@ -15,27 +15,27 @@ if ($arParams['bAdmin']):
 endif;
 
 $BGCOLORS = array(
-	'#f1e28f',
-	'#a0c4f1',
-	'#f2a584',
-	'#fe3737',
-	'#d3d3d3',
-	'#bfe4af',
-	'#d3d3d3',
-	'#a9b8bf',
-	'#f2a584',
+    '#FFE699',
+    '#BDD7EE',
+    '#F8CBAD',
+    '#FF0000',
+    '#EFEDF0',
+    '#C6E0B4',
+    '#E7E6E6',
+    '#F2F2F2',
+    '#F8CBAD',
 
-	'#43d2d7',
-	'#43d795',
-	'#92d743',
-	'#d68085',
-	'#d680c1',
-	'#adaae7',
-	'#aad5e7',
-	'#aae7cb',
-	'#aee7aa',
-	'#d9eccc',
-	'#ece6cc'
+    '#43d2d7',
+    '#43d795',
+    '#92d743',
+    '#d68085',
+    '#d680c1',
+    '#adaae7',
+    '#aad5e7',
+    '#aae7cb',
+    '#aee7aa',
+    '#d9eccc',
+    '#ece6cc'
 );
 $c_id = 0;
 $TYPE_BGCOLORS = array();
