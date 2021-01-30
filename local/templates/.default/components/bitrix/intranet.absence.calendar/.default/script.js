@@ -56,6 +56,7 @@ var jsBXAC = {
 	},
 
 	TYPES: {},
+	DEPARTMENTS: {},
 	TYPE_BGCOLORS: {},
 
 	bInitFinished: false,
@@ -94,6 +95,8 @@ var jsBXAC = {
 
 		this.TYPES = arParams.TYPES;
 		this.TYPE_BGCOLORS = arParams.TYPE_BGCOLORS;
+
+		this.DEPARTMENTS = arParams.DEPARTMENTS;
 
 		this.MESSAGES = arParams.MESSAGES;
 		this.ERRORS = arParams.ERRORS;
@@ -157,15 +160,21 @@ var jsBXAC = {
 
 	SetDataFilter: function(field, value)
 	{
-
+		console.log(field)
+		console.log(value)
 		if (null == value)
 		{
 			delete this.FILTER[field];
 		}
 		else
 		{
+			//this.FILTER[field] = Object.entries(value);
 			this.FILTER[field] = value;
 		}
+
+		//if(field == 'DEPARTMENT') {
+		//	this.FILTER[field] = Object.entries(value);
+		//}
 
 		if (null != this.CURRENT_VIEW_HANDLER.Load)
 			console.log(this.FILTER)
@@ -182,8 +191,20 @@ var jsBXAC = {
 		if (null != this.FILTER.USERS_ALL)
 			str += '&USERS_ALL=' + this.FILTER.USERS_ALL;
 
-		if (null != this.FILTER.DEPARTMENT)
-			str += '&DEPARTMENT=' + this.FILTER.DEPARTMENT;
+		// vvvv
+
+		//if (null != this.FILTER.DEPARTMENT)
+		//	str += '&DEPARTMENT=' + this.FILTER.DEPARTMENT;
+		var type_dep = ''
+		for (var i in this.FILTER.DEPARTMENT)
+			if (this.FILTER.DEPARTMENT[i] === true)
+				type_dep += (type_dep.length > 0 ? ',' : '') + i;
+
+		if (type_dep.length > 0)
+			str += '&DEPARTMENT=' + type_dep;
+		else if (null != i)
+			str += '&DEPARTMENT=none';
+
 
 		var type_filter = ''
 		for (var i in this.FILTER.TYPE)
@@ -385,6 +406,9 @@ var jsBXAC = {
 
 			this.TOOLBAR.BXAddControl(this.MESSAGES.IAC_FILTER_TYPEFILTER, this.CONTROLS.TYPEFILTER);
 
+
+			//console.log(this.TYPES)
+
 			new JCCalendarFilter(function(a,b){_this.SetDataFilter(a,b)}, this.CONTROLS.TYPEFILTER, this.TYPES, this.MESSAGES, this.TYPE_BGCOLORS);
 		}
 
@@ -420,7 +444,7 @@ var jsBXAC = {
 
 		if (null != this.SETTINGS.CONTROLS.DEPARTMENT)
 		{
-			var obDepartmentsContainer = document.getElementById('bx_calendar_conrol_departments');
+			/*var obDepartmentsContainer = document.getElementById('bx_calendar_conrol_departments');
 			if (null != obDepartmentsContainer)
 			{
 				this.CONTROLS.DEPARTMENT = obDepartmentsContainer.firstChild;
@@ -432,7 +456,44 @@ var jsBXAC = {
 				this.CONTROLS.DEPARTMENT.onchange = function() {_this.SetDataFilter('DEPARTMENT', this.value)};
 
 				this.TOOLBAR.BXAddControl(this.MESSAGES.IAC_FILTER_DEPARTMENT, this.CONTROLS.DEPARTMENT);
+			}*/
+
+			/*var obDepartmentsContainer = document.getElementById('bx_calendar_control_departments');
+			console.log(obDepartmentsContainer)
+
+			if (null != obDepartmentsContainer)
+			{
+				this.CONTROLS.DEPARTMENT = obDepartmentsContainer.firstChild;
+				while (this.CONTROLS.DEPARTMENT && this.CONTROLS.DEPARTMENT.tagName != 'SELECT')
+					this.CONTROLS.DEPARTMENT = this.CONTROLS.DEPARTMENT.nextSibling;
+
+				this.CONTROLS.DEPARTMENT.parentNode.removeChild(this.CONTROLS.DEPARTMENT);
+
+				this.CONTROLS.DEPARTMENT.onchange = function() {_this.SetDataFilter('DEPARTMENT', this.value)};
+
+				console.log(this.CONTROLS.DEPARTMENT)
+
+				this.TOOLBAR.BXAddControl(this.MESSAGES.IAC_FILTER_DEPARTMENT, this.CONTROLS.DEPARTMENT);
 			}
+
+			this.CONTROLS.DEPARTMENT = document.createElement('SPAN');
+			this.CONTROLS.DEPARTMENT.className = 'bx-indicator bx-indicator-off';
+			this.CONTROLS.DEPARTMENT.innerHTML = '&nbsp;&nbsp;&nbsp;'
+
+			this.TOOLBAR.BXAddControl(this.MESSAGES.IAC_FILTER_DEPARTMENT, this.CONTROLS.DEPARTMENT);*/
+
+			// новые департаменты
+			this.CONTROLS.DEPARTMENT = document.createElement('SPAN');
+			this.CONTROLS.DEPARTMENT.className = 'bx-indicator bx-indicator-off';
+			this.CONTROLS.DEPARTMENT.innerHTML = '&nbsp;&nbsp;&nbsp;'
+
+			this.TOOLBAR.BXAddControl(this.MESSAGES.IAC_FILTER_DEPARTMENT, this.CONTROLS.DEPARTMENT);
+
+
+
+
+			new JCCalendarFilter(function(a,b){_this.SetDataFilter(a,b)}, this.CONTROLS.DEPARTMENT, this.DEPARTMENTS, this.MESSAGES, this.TYPE_BGCOLORS, "DEPARTMENT", 'bx_filter_title_text_d');
+
 		}
 	},
 
@@ -755,7 +816,8 @@ var jsBXAC = {
 	}
 }
 
-function JCCalendarFilter(_callback, _parentNode, _arTypes, MESSAGES, typeBgColors)
+function JCCalendarFilter(_callback, _parentNode, _arTypes, MESSAGES, typeBgColors, callback='TYPE',
+						  idblock='bx_filter_title_text')
 {
 	var _this = this;
 
@@ -767,7 +829,8 @@ function JCCalendarFilter(_callback, _parentNode, _arTypes, MESSAGES, typeBgColo
 	this.LAYOUT = document.body.appendChild(document.createElement('DIV'));
 	this.LAYOUT.className = 'bx-calendar-filter';
 
-	var pos = BX.pos(_parentNode.parentNode.parentNode, true);
+	//var pos = BX.pos(_parentNode.parentNode.parentNode, true);
+	var pos = BX.pos(_parentNode.parentNode, true);
 
 	this.LAYOUT.style.top = (pos.bottom - 5) + 'px';
 	this.LAYOUT.style.left = (pos.left + 5) + 'px';
@@ -781,7 +844,7 @@ function JCCalendarFilter(_callback, _parentNode, _arTypes, MESSAGES, typeBgColo
 	this.LAYOUT.innerHTML = '<div class="bx-filter-title">'+
 			'<table cellspacing="0" style="width:100% !important; padding:0px !important; ">'+
 			'	<tr>'+
-			'		<td class="bx-filter-title-text" id="bx_filter_title_text">' + MESSAGES.INTR_ABSC_TPL_FILTER_OFF + '</td><td width="0%"><a class="bx-filter-close" id="bx_filter_close"></a></td></tr>'+
+			'		<td class="bx-filter-title-text" id=' + idblock + '>' + MESSAGES.INTR_ABSC_TPL_FILTER_OFF + '</td><td width="0%"><a class="bx-filter-close" id="bx_filter_close"></a></td></tr>'+
 			'</table>'+
 			'</div>';
 
@@ -890,8 +953,10 @@ function JCCalendarFilter(_callback, _parentNode, _arTypes, MESSAGES, typeBgColo
 	{
 		_this.TIMER = null;
 
+
+
 		_this._parentNode.className = 'bx-indicator bx-indicator-off';
-		document.getElementById('bx_filter_title_text').innerHTML = MESSAGES.INTR_ABSC_TPL_FILTER_OFF;
+		document.getElementById(idblock).innerHTML = MESSAGES.INTR_ABSC_TPL_FILTER_OFF;
 		_this.CHECK_ALL.checked = true;
 
 		for (var i = 0; i < _this.arTypes.length; i++)
@@ -899,13 +964,14 @@ function JCCalendarFilter(_callback, _parentNode, _arTypes, MESSAGES, typeBgColo
 			if (!_this.arCurrentChecked[_this.arTypes[i].NAME])
 			{
 				_this._parentNode.className = 'bx-indicator bx-indicator-on';
-				document.getElementById('bx_filter_title_text').innerHTML = MESSAGES.INTR_ABSC_TPL_FILTER_ON;
+				document.getElementById(idblock).innerHTML = MESSAGES.INTR_ABSC_TPL_FILTER_ON;
 				_this.CHECK_ALL.checked = false;
 				break;
 			}
 		}
 
-		_callback('TYPE', _this.arCurrentChecked);
+		_callback(callback, _this.arCurrentChecked);
+		//_callback(callBack, _this.arCurrentChecked);
 	}
 
 	this.CheckClick = function(e)

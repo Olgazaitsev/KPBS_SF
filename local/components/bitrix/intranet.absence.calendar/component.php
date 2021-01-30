@@ -145,9 +145,20 @@ if ($arParams['AJAX_CALL'] == 'DATA')
 	$arParams['TS_START'] = date('U', $arParams['TS_START']);
 	$arParams['TS_FINISH'] = date('U', $arParams['TS_FINISH']);
 
-	$arParams['TYPES'] = $arParams['TYPES'] ? explode(',', $arParams['TYPES']) : array();
+	\Bitrix\Main\Diag\Debug::writeToFile(array($arParams['DEPARTMENT']), "dept1arr", "__miros.log");
 
-	$arParams['DEPARTMENT'] = $arParams['DEPARTMENT'] ? intval($arParams['DEPARTMENT']) : 0;
+	$arParams['TYPES'] = $arParams['TYPES'] ? explode(',', $arParams['TYPES']) : array();
+	$arParams['DEPARTMENT'] = $arParams['DEPARTMENT'] ? explode(',', $arParams['DEPARTMENT']) : array();
+
+	\Bitrix\Main\Diag\Debug::writeToFile(array($arParams['DEPARTMENT']), "dept1hharr", "__miros.log");
+	//foreach($arParams['DEPARTMENT'] as $key => $val) {
+	//	\Bitrix\Main\Diag\Debug::writeToFile($val->name, "dept1", "__miros.log");
+	//}
+
+
+
+	//$arParams['DEPARTMENT'] = $arParams['
+	//DEPARTMENT'] ? intval($arParams['DEPARTMENT']) : 0;
 
 	$arParams['SHORT_EVENTS'] = $arParams['SHORT_EVENTS'] == 'N' ? 'N' : 'Y';
 	//$arParams['USERS_ALL'] = $arParams['USERS_ALL'] == 'Y' ? 'Y' : 'N';
@@ -164,6 +175,9 @@ if ($arParams['AJAX_CALL'] == 'DATA')
 
 	if ($arResult['ERROR_CODE'] == '')
 	{
+		\Bitrix\Main\Diag\Debug::writeToFile($arParams['TYPES'], "typespar", "__miros.log");
+
+
 		$MODE = 0;
 		if (count($arParams['TYPES']) <= 0)
 		{
@@ -184,6 +198,7 @@ if ($arParams['AJAX_CALL'] == 'DATA')
 		}
 
 
+
 		//if($arParams['USERS_ALL'] != 'A') {
 			$arIBlockElements = CIntranetUtils::GetAbsenceData(
 				array(
@@ -197,6 +212,7 @@ if ($arParams['AJAX_CALL'] == 'DATA')
 			);
 
 			$arUserIDs = array_keys($arIBlockElements);
+		\Bitrix\Main\Diag\Debug::writeToFile($arUserIDs, "usid", "__miros.log");
 		//}
 
 		//if ($arParams['USERS_ALL'] == 'Y' || $arParams['USERS_ALL'] == 'A')
@@ -212,8 +228,10 @@ if ($arParams['AJAX_CALL'] == 'DATA')
 
 			if ($ufId = $DB->query("SELECT ID FROM b_user_field WHERE ENTITY_ID = 'USER' AND FIELD_NAME = 'UF_DEPARTMENT'")->fetch())
 			{
-				if ($arParams['DEPARTMENT'] > 0)
+
+				/*if ($arParams['DEPARTMENT'] > 0)
 				{
+					\Bitrix\Main\Diag\Debug::writeToFile(array($arParams['DEPARTMENT']), "deptarr", "__miros.log");
 					$deptIds = $arParams['FILTER_SECTION_CURONLY'] == 'N'
 						? \CIntranetUtils::getIBlockSectionChildren($arParams['DEPARTMENT'])
 						: array($arParams['DEPARTMENT']);
@@ -226,8 +244,9 @@ if ($arParams['AJAX_CALL'] == 'DATA')
 						},
 						$deptIds
 					)));
-				}
-
+				}*/
+				$deptIds = $arParams['DEPARTMENT'];
+				\Bitrix\Main\Diag\Debug::writeToFile($deptIds, "dept2", "__miros.log");
 				$dbRes = $DB->query(sprintf(
 					"SELECT BUF.VALUE_ID AS ID FROM b_utm_user BUF LEFT JOIN b_user U ON BUF.VALUE_ID = U.ID
 						WHERE BUF.FIELD_ID = %u AND BUF.VALUE_INT %s AND U.ACTIVE = 'Y' ORDER BY U.LAST_NAME ASC",
@@ -238,6 +257,7 @@ if ($arParams['AJAX_CALL'] == 'DATA')
 					$allUserIds[] = $item['ID'];
 
 				$allUserIds = array_unique($allUserIds);
+				\Bitrix\Main\Diag\Debug::writeToFile($allUserIds, "users", "__miros.log");
 			}
 
 			if($arParams['USERS_ALL'] == 'Y' || $arParams['USERS_ALL'] == 'A') {
@@ -245,6 +265,9 @@ if ($arParams['AJAX_CALL'] == 'DATA')
 			} else {
 				$arUserIDs = array_intersect($allUserIds, $arUserIDs);
 			}
+
+
+			\Bitrix\Main\Diag\Debug::writeToFile($arUserIDs, "arusers", "__miros.log");
 
 			//$arUserIDs = $arParams['USERS_ALL'] == 'Y' ? $allUserIds : array_intersect($allUserIds, $arUserIDs);
 
@@ -267,12 +290,15 @@ if ($arParams['AJAX_CALL'] == 'DATA')
 
 				$arUserIDs = array_slice($arUserIDs, $arParams['PAGE_NUMBER']*100, 100);
 
+				\Bitrix\Main\Diag\Debug::writeToFile($arUserIDs, "arusers2", "__miros.log");
+
 				$dbUsers = \Bitrix\Main\UserTable::getList(array(
 					'select' => array('ID', 'LOGIN', 'NAME', 'LAST_NAME', 'SECOND_NAME', 'PERSONAL_PROFESSION', 'WORK_POSITION'),
 					'filter' => array('=ID' => $arUserIDs),
 				));
 
 				$arUsers = array_combine($arUserIDs, array_fill(0, count($arUserIDs), false));
+				\Bitrix\Main\Diag\Debug::writeToFile($arUsers, "arusers3", "__miros.log");
 				while ($arUser = $dbUsers->Fetch())
 				{
 					$arUsers[$arUser['ID']] = array(
@@ -286,8 +312,11 @@ if ($arParams['AJAX_CALL'] == 'DATA')
 						'DETAIL_URL' => str_replace(array('#ID#', '#USER_ID#'), $arUser['ID'], $arParams['DETAIL_URL']),
 					);
 
+					\Bitrix\Main\Diag\Debug::writeToFile($arUsers[$arUser['ID']], "arusers4", "__miros.log");
+
 					foreach ($arUsers[$arUser['ID']]['DATA'] as $key => $arEntry)
 					{
+						// фигня с типами
 						if ($arEntry['ENTRY_TYPE'] == BX_INTRANET_ABSENCE_HR)
 						{
 							$arEntry['DATE_ACTIVE_FROM'] = MakeTimeStamp($arEntry['DATE_ACTIVE_FROM']);
@@ -318,7 +347,14 @@ if ($arParams['AJAX_CALL'] == 'DATA')
 							)),
 							$arEntry['DATE_ACTIVE_TO']
 						);
-
+						if($arParams['TYPES'][0]=='none') {
+							$arParams['TYPES'] = array();
+						}
+						//$arParams['TYPES'] = array();
+						\Bitrix\Main\Diag\Debug::writeToFile($arUsers[$arUser['ID']], "arusers5", "__miros.log");
+						\Bitrix\Main\Diag\Debug::writeToFile($arParams['TYPES'], "types", "__miros.log");
+						\Bitrix\Main\Diag\Debug::writeToFile($arEntry['TYPE'], "type", "__miros.log");
+						// проблемный код
 						if (!is_array($arParams['TYPES']) || count($arParams['TYPES'])<=0 || in_array($arEntry['TYPE'], $arParams['TYPES']))
 						{
 
@@ -326,14 +362,21 @@ if ($arParams['AJAX_CALL'] == 'DATA')
 								$arParams['SHORT_EVENTS'] == 'N'
 								&& $arEntry['DATE_ACTIVE_TO'] > $arEntry['DATE_ACTIVE_FROM']
 								&& date('Y-m-d', $arEntry['DATE_ACTIVE_FROM']) == date('Y-m-d', $arEntry['DATE_ACTIVE_TO'])
-							)
+							) {
+								\Bitrix\Main\Diag\Debug::writeToFile("cut", "arusers5", "__miros.log");
 								unset($arUsers[$arUser['ID']]['DATA'][$key]);
-							else
+							}
+							else {
+								\Bitrix\Main\Diag\Debug::writeToFile("entry", "arusers5", "__miros.log");
 								$arUsers[$arUser['ID']]['DATA'][$key] = $arEntry;
+							}
 						}
-						else
+						else {
+							\Bitrix\Main\Diag\Debug::writeToFile("unset", "arusers5", "__miros.log");
 							unset($arUsers[$arUser['ID']]['DATA'][$key]);
+						}
 					}
+					\Bitrix\Main\Diag\Debug::writeToFile($arUsers[$arUser['ID']], "arusers6", "__miros.log");
 
 					if ($arParams['USERS_ALL'] == 'N' && count($arUsers[$arUser['ID']]['DATA']) <= 0)
 						unset($arUsers[$arUser['ID']]);
@@ -349,7 +392,8 @@ if ($arParams['AJAX_CALL'] == 'DATA')
 						}
 					}
 				}
-
+				// тут уже пусто
+				\Bitrix\Main\Diag\Debug::writeToFile($arUsers, "usfinal", "__miros.log");
 
 				$arResult['USERS'] = array_filter($arUsers);
 			}

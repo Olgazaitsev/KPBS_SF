@@ -57,6 +57,9 @@ while($enum_fields = $property_enums->GetNext())
 		}
 	}
 }
+//echo "<pre>";
+//print_r($TYPES);
+//echo "</pre>";
 
 ?>
 <script type="text/javascript">
@@ -91,6 +94,7 @@ jsBXAC.Init(
 		'DAYS_FULL': [<?for($i=1;$i<8;$i++){echo ($i==1 ? '' : ','),"'",CUtil::JSEscape(GetMessage('IAC_DAY_FULL_'.$i)),"'";}?>],
 		'TYPE_BGCOLORS': <?=\CUtil::phpToJsObject($TYPE_BGCOLORS) ?>,
 		'TYPES': <?=\CUtil::phpToJsObject($TYPES) ?>,
+        'DEPARTMENTS': <?=\CUtil::phpToJsObject($arResult['DEPARTMENTS']) ?>,
 		'MESSAGES': {
 			'IAC_MAIN_TITLE': '<?echo CUtil::JSEscape(GetMessage('INTR_IAC_MAIN_TITLE'))?>',
 			'IAC_FILTER_TYPEFILTER': '<?echo CUtil::JSEscape(GetMessage('IAC_FILTER_TYPEFILTER'))?>',

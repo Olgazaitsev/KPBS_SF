@@ -12,4 +12,11 @@ class TestClass
 
     }
 
+    public static function OnSearchReindex(&$NS, $oCallback, $callback_method)
+    {
+
+        echo "okay";
+
+    }
+
 }
