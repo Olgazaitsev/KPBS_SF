@@ -832,7 +832,7 @@ function JCCalendarFilter(_callback, _parentNode, _arTypes, MESSAGES, typeBgColo
 	//var pos = BX.pos(_parentNode.parentNode.parentNode, true);
 	var pos = BX.pos(_parentNode.parentNode, true);
 
-	this.LAYOUT.style.top = (pos.bottom - 5) + 'px';
+	this.LAYOUT.style.top = (pos.bottom - 60) + 'px';
 	this.LAYOUT.style.left = (pos.left + 5) + 'px';
 
 	this.LAYOUT.onclick = BX.PreventDefault;
