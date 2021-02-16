@@ -85,49 +85,61 @@ class MyEventsHandler
         }
         CModule::IncludeModule('crm');
         $arFilterDeal = array('ID'=>$dealId);
-        $arSelectDeal = array('ID','UF_CRM_1612080094', 'UF_CRM_1612080473');
+        $arSelectDeal = array('ID','UF_CRM_1611675525741', 'UF_CRM_1611675557650');
 
         $obResDeal = CCrmDeal::GetListEx(false,$arFilterDeal,false,false,$arSelectDeal)->Fetch();
         // заменить код UF_CRM_1612080094 на код поля пнр на бое, UF_CRM_1612080473 на код поля дата ПНР на бое
         // заменить значение 2039 на значение поля да поля ПНР на бое
         // пнр заполнена, дата нет (восклиц знак если нет)
-        if($arFields['UF_CRM_1612080094']==2039 && !$arFields['UF_CRM_1612080473']) {
-            if(!$obResDeal['UF_CRM_1612080473']) {
+        if($arFields['UF_CRM_1611675525741']==2041 && !$arFields['UF_CRM_1611675557650']) {
+            if(!$obResDeal['UF_CRM_1611675557650']) {
                 $arFields['RESULT_MESSAGE'] = "Поле дата ПНР должно быть заполнено";
                 $APPLICATION->ThrowException($arFields['RESULT_MESSAGE']);
                 return false;
             }
             // дата пнр заполнена, пнр нет
-        } else if($arFields['UF_CRM_1612080094'] != 2039 && $arFields['UF_CRM_1612080473']) {
-            if($obResDeal['UF_CRM_1612080094'] != 2039) {
+        } else if($arFields['UF_CRM_1611675525741'] != 2041 && $arFields['UF_CRM_1611675557650']) {
+            if($obResDeal['UF_CRM_1611675525741'] != 2041) {
                 $arFields['RESULT_MESSAGE'] = "Поле ПНР должно иметь значение да";
                 $APPLICATION->ThrowException($arFields['RESULT_MESSAGE']);
                 return false;
             }
         }
 
-        if (array_key_exists('UF_CRM_1612080473', $arFields) && $arFields['UF_CRM_1612080473']==""
-            && $obResDeal['UF_CRM_1612080094']==2039) {
-            $arFields['RESULT_MESSAGE'] = "Дата ПНР не может быть пустой";
-            $APPLICATION->ThrowException($arFields['RESULT_MESSAGE']);
-            return false;
+        if (array_key_exists('UF_CRM_1611675557650', $arFields) && $arFields['UF_CRM_1611675557650']=="") {
+            if($arFields['UF_CRM_1611675525741']==2041 && $obResDeal['UF_CRM_1611675525741']==2041) {
+                $arFields['RESULT_MESSAGE'] = "Дата ПНР не может быть пустой";
+                $APPLICATION->ThrowException($arFields['RESULT_MESSAGE']);
+                return false;
+            }
         }
 
         global $USER_FIELD_MANAGER;
         if($dealId > 0 && $modifiedById > 0) {
             $dealContractSignPlanDateFieldName = Utility::GetUserFieldNameByTitle('Целевая дата подписания договора', 'ru', 'CRM_DEAL');
-            $dealContractSignPlanDate = new DateTime($arFields[$dealContractSignPlanDateFieldName] ?? $USER_FIELD_MANAGER->GetUserFieldValue('CRM_DEAL', $dealContractSignPlanDateFieldName, $dealId));
-            $dealPlanExecuteDateFieldName = Utility::GetUserFieldNameByTitle('Предполагаемая дата поставки/реализации', 'ru', 'CRM_DEAL');
-            $dealPlanExecuteDate = new DateTime($arFields[$dealPlanExecuteDateFieldName] ?? $USER_FIELD_MANAGER->GetUserFieldValue('CRM_DEAL', $dealPlanExecuteDateFieldName, $dealId));
-            $dealPlanCloseDate = new DateTime($arFields["CLOSEDATE"] ?? $deal["CLOSEDATE"]);
+            $dealContractSignPlanDate = new DateTime($arFields[$dealContractSignPlanDateFieldName]); // ?? $USER_FIELD_MANAGER->GetUserFieldValue('CRM_DEAL', $dealContractSignPlanDateFieldName, $dealId));
 
-            if(isset($dealContractSignPlanDate) && isset($dealPlanExecuteDate) && $dealContractSignPlanDate > $dealPlanExecuteDate){
+//		if(!isset($arFields[$dealContractSignPlanDateFieldName]))
+//			$dealContractSignPlanDate = new DateTime($USER_FIELD_MANAGER->GetUserFieldValue('CRM_DEAL', $dealContractSignPlanDateFieldName, $dealId));
+
+            $dealPlanExecuteDateFieldName = Utility::GetUserFieldNameByTitle('Предполагаемая дата поставки/реализации', 'ru', 'CRM_DEAL');
+            $dealPlanExecuteDate = new DateTime($arFields[$dealPlanExecuteDateFieldName]); // ?? $USER_FIELD_MANAGER->GetUserFieldValue('CRM_DEAL', $dealPlanExecuteDateFieldName, $dealId));
+
+//		if(!isset($arFields[$dealPlanExecuteDateFieldName]))
+//			$dealPlanExecuteDate = new DateTime($USER_FIELD_MANAGER->GetUserFieldValue('CRM_DEAL', $dealPlanExecuteDateFieldName, $dealId));
+
+            $dealPlanCloseDate = new DateTime($arFields["CLOSEDATE"]);// ?? $deal["CLOSEDATE"]);
+//		if(!isset($arFields[$dealPlanExecuteDateFieldName]))
+//	            $dealPlanCloseDate = new DateTime($deal["CLOSEDATE"]);
+
+
+            if(isset($dealContractSignPlanDate) && $dealContractSignPlanDate != '' && isset($dealPlanExecuteDate) && $dealPlanExecuteDate != '' && $dealContractSignPlanDate > $dealPlanExecuteDate){
                 $arFields['RESULT_MESSAGE'] = "Предполагаемая дата поставки/реализации не может быть раньше целевой даты подписания договора";
                 $APPLICATION->ThrowException($arFields['RESULT_MESSAGE']);
                 return false;
             }
 
-            if(isset($dealPlanExecuteDate) && isset($dealPlanCloseDate) && $dealPlanExecuteDate > $dealPlanCloseDate){
+            if(isset($dealPlanExecuteDate) && $dealPlanExecuteDate != '' && isset($dealPlanCloseDate) && $dealPlanCloseDate != '' && $dealPlanExecuteDate > $dealPlanCloseDate){
                 $arFields['RESULT_MESSAGE'] = "Целевая дата закрытия не может быть раньше предполагаемой даты поставки/реализации";
                 $APPLICATION->ThrowException($arFields['RESULT_MESSAGE']);
                 return false;
