@@ -57,7 +57,7 @@ $arAllOptions = [
             Option::get($MODULE_ID, 'UF'),
             ['text']
         ],*/
-        [
+        /*[
             'webinars_iblock_id',
             Loc::getMessage($MODULE_ID.'_webinars_iblock_id'),
             Option::get($MODULE_ID, 'webinars_iblock_id'),
@@ -65,7 +65,7 @@ $arAllOptions = [
                 'multiselectbox',
                 $arIblocks
             ]
-        ],
+        ],*/
     ],
     /*'sendpulse' => [
         [
@@ -88,6 +88,57 @@ $arAllOptions = [
         ]
     ]*/
 ];
+
+//$ufarr = array("НИЧЕГО НЕ ВЫБРАНО", "FORMATTED_OPPORTUNITY", "OPPORTUNITY_WITH_CURRENCY", "OPPORTUNITY");
+
+//$ufarr['EMPTY'] = 'НИЧЕГО НЕ ВЫБРАНО';
+$ufarr["FORMATTED_OPPORTUNITY"] = "FORMATTED_OPPORTUNITY";
+$ufarr["OPPORTUNITY_WITH_CURRENCY"] = "OPPORTUNITY_WITH_CURRENCY";
+$ufarr["OPPORTUNITY"] = "OPPORTUNITY";
+
+$rsUserFields = \Bitrix\Main\UserFieldTable::getList(array(
+    'filter' => array('ENTITY_ID' => 'CRM_DEAL')
+));
+
+
+while($arUserField=$rsUserFields->fetch())
+
+{
+    if($arUserField['USER_TYPE_ID']=='double') {
+        //array_push($ufarr, $arUserField['FIELD_NAME']);
+        $ufarr[$arUserField['FIELD_NAME']] = $arUserField['FIELD_NAME'];
+    }
+
+}
+
+$res = \Bitrix\Main\GroupTable::getList(
+    array(
+        // выбераем название, идентификатор, символьный код, сортировку
+        'select' => array('NAME', 'ID', 'STRING_ID', 'C_SORT'),
+        // все группы, кроме основной группы администраторов
+        'filter' => array('!ID' => '1')
+    )
+);
+//print_r($res->Fetch());
+
+while ($arResGroup = $res->Fetch()) {
+    //echo "<pre>";
+    //print_r($arResContact);
+    //echo "</pre>";
+
+    $grouparr = [
+          'group_'.$arResGroup['ID'],
+           $arResGroup['ID'].'.'.$arResGroup['NAME'],
+           Option::get($MODULE_ID, 'group_'.$arResGroup['ID']),
+            [
+                'multiselectbox',
+                $ufarr
+            ]
+    ];
+    array_push($arAllOptions['main'], $grouparr);
+}
+
+
 
 if(isset($request["save"]) && check_bitrix_sessid()) {
     foreach ($arAllOptions as $part) {
