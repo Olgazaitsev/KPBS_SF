@@ -15,8 +15,9 @@ class Utility
     }
 
     public function GetUserFieldValueByLabel($fieldLabel, $entityType, $entityId)
+        // init.php
     {
-        $connection = Bitrix\Main\Application::getConnection();
+        $connection = \Bitrix\Main\Application::getConnection();
         $sqlHelper = $connection->getSqlHelper();
         $sql = "SELECT DISTINCT f.FIELD_NAME FROM b_user_field_lang l JOIN b_user_field f on f.ID = l.USER_FIELD_ID WHERE l.LIST_COLUMN_LABEL = '" . $fieldLabel . "' and f.ENTITY_ID = '" . $entityType . "'";
         $recordset = $connection->query($sql);
@@ -31,7 +32,8 @@ class Utility
     }
 
     public static function GetUserFieldTitle($ufName, $lang = "ru", $entityTypeId = "CRM_DEAL"){
-        $connection = Bitrix\Main\Application::getConnection();
+        // внутри класса
+        $connection = \Bitrix\Main\Application::getConnection();
         $sqlHelper = $connection->getSqlHelper();
         $sql = "SELECT DISTINCT l.EDIT_FORM_LABEL FROM b_user_field_lang l JOIN b_user_field f on f.ID = l.USER_FIELD_ID WHERE f.ENTITY_ID = '" . $entityTypeId . "' and  f.FIELD_NAME = '" . $ufName . "' AND l.LANGUAGE_ID = '" . $lang . "'" ;
         $recordset = $connection->query($sql);
@@ -44,7 +46,8 @@ class Utility
     }
 
     public static function GetUserFieldNameByTitle($ufTitle, $lang = "ru", $entityTypeId = "CRM_DEAL"){
-        $connection = Bitrix\Main\Application::getConnection();
+        // внутри класса
+        $connection = \Bitrix\Main\Application::getConnection();
         $sqlHelper = $connection->getSqlHelper();
         $sql = "select distinct f.field_name from sitemanager.b_user_field_lang l JOIN sitemanager.b_user_field f on f.ID = l.USER_FIELD_ID where ENTITY_ID = '" . $entityTypeId . "' and  lower(l.edit_form_label) = lower('" . $ufTitle . "') AND l.LANGUAGE_ID = '" . $lang . "'" ;
         $recordset = $connection->query($sql);
@@ -58,6 +61,7 @@ class Utility
 
 
     public static function GetUserFieldEnumValue($ufName, $enumId, $entityTypeId){
+        // init.php
         if (!($enumId))
             return;
 
@@ -67,7 +71,7 @@ class Utility
 	if (is_array($enumId))
 	    return;
 
-        $connection = Bitrix\Main\Application::getConnection();
+        $connection = \Bitrix\Main\Application::getConnection();
         $sql = "SELECT DISTINCT bufe.VALUE FROM b_user_field_enum bufe JOIN b_user_field f on f.ID = bufe.USER_FIELD_ID WHERE f.ENTITY_ID = '" . $entityTypeId . "' and  f.FIELD_NAME = '" . $ufName . "' AND bufe.ID = ".$enumId;
         $recordset = $connection->query($sql);
 
@@ -80,7 +84,8 @@ class Utility
     }
 	
 	public function GetDealsCount(){
-		$connection = Bitrix\Main\Application::getConnection();
+        // внутри класса
+		$connection = \Bitrix\Main\Application::getConnection();
         // $sqlHelper = $connection->getSqlHelper();
         $sql = "SELECT COUNT(*) AS COUNT FROM b_crm_deal;";
         $recordset = $connection->query($sql);
@@ -94,7 +99,8 @@ class Utility
 	}
 
 	public function GetCompaniesCount(){
-		$connection = Bitrix\Main\Application::getConnection();
+        // нигде
+		$connection = \Bitrix\Main\Application::getConnection();
         // $sqlHelper = $connection->getSqlHelper();
         $sql = "SELECT COUNT(*) AS COUNT FROM b_crm_company;";
         $recordset = $connection->query($sql);
@@ -108,9 +114,12 @@ class Utility
 	}
 
 	public static function GetUserAssignedByDealsIds($userId){
+        // template deal.list
+        // template deal.details
+        // kanban template
         $dealsIds = Array();
 
-        $connection = Bitrix\Main\Application::getConnection();
+        $connection = \Bitrix\Main\Application::getConnection();
         $sql = "SELECT d.ID AS DEAL_ID FROM b_crm_deal d where d.ASSIGNED_BY_ID = ".$userId.";";
 
         $recordset = $connection->query($sql);
@@ -123,6 +132,7 @@ class Utility
     }
 
 	public static function sendNewTaskNotification($taskId){
+        // init
         /*
 		 * #EMAIL_FROM#
 		 * #EMAIL_TO#
@@ -180,6 +190,7 @@ class Utility
     }
 
     public static function sendUpdateDealNotification($changedArFields, $dealId, $modifiedById)
+        // init
     {
         // Проверяем поле KB - если поменялось только оно - это автоматическое обновление
         if (count($changedArFields) == 4 && $changedArFields["UF_CRM_1579077455200"]) {
@@ -304,6 +315,7 @@ class Utility
     }
 
     public static function sendUserAddedToGroupNotify($arFields){
+        // init
         /*
          * EMAIL_TO
          * #SOCNET_GROUP_NAME#
@@ -344,6 +356,7 @@ class Utility
     }
 
     static function getDealFieldName($field){
+        // внутри
         $fieldsName = Array();
         $fieldsName["ID"] = "Идентификатор";
         $fieldsName["TITLE"] = "Название";
@@ -438,6 +451,7 @@ class Utility
     // $groupResults[0]["DUPLICATES"][0]["ENTITIES"][0]
 
     public static function FillINNAndKPPForDupResult(&$groupResults){
+        // нигде
         foreach ($groupResults as &$i1){
             if($i1["DUPLICATES"]){
                 foreach ($i1["DUPLICATES"] as &$i2){
@@ -457,10 +471,11 @@ class Utility
     }
 
     public static function UpdateDealFieldSettings(){
+        // include - думаю, был скрипт
         global $USER;
         $curUserID = $USER->GetID();
 
-        $connection = Bitrix\Main\Application::getConnection();
+        $connection = \Bitrix\Main\Application::getConnection();
         $sql = "SELECT DISTINCT s.hide_deal_money FROM m_user_settings s WHERE s.user_id = " . $curUserID;
         $recordset = $connection->query($sql);
 
@@ -479,7 +494,9 @@ class Utility
     }
 
     public static function IsDealFieldsInvisibleEnabled($userId){
-        $connection = Bitrix\Main\Application::getConnection();
+        // компонент канбана
+        // template deal.list
+        $connection = \Bitrix\Main\Application::getConnection();
         $sql = "SELECT DISTINCT s.hide_deal_money FROM m_user_settings s WHERE s.user_id = " . $userId;
         $recordset = $connection->query($sql);
 
@@ -491,6 +508,7 @@ class Utility
     }
 
     public static function PrepareFieldsAccess($arSelectFields){
+        // нигде
         $FIELDS_ACCESS_DENIED = $GLOBALS["FIELDS_ACCESS_DENIED"];
 
         $userId = CUser::GetID();
@@ -514,6 +532,8 @@ class Utility
     }
 
     public static function ClearAccessDeniedFields(&$rows){
+        // report_helper
+        // массив надо брать из настроек
         $FIELDS_ACCESS_DENIED = $GLOBALS["FIELDS_ACCESS_DENIED"];
 
         $userId = CUser::GetID();
@@ -532,6 +552,7 @@ class Utility
     }
 
     public static function CheckRequiredUserField($arFields, $ufFieldTitle, $entityId, &$e, &$res, $lang = 'ru', $entityTypeId = 'CRM_COMPANY'){
+        // init.php
         global $USER_FIELD_MANAGER;
         $ufFieldName = Utility::GetUserFieldNameByTitle($ufFieldTitle, $lang, $entityTypeId);
         $ufFieldValue = $arFields[$ufFieldName];

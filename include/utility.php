@@ -473,7 +473,12 @@ class Utility
     }
 
     public static function IsDealFieldsInvisibleEnabled($userId){
-        $connection = Bitrix\Main\Application::getConnection();
+        $uf = COption::GetOptionString('kpbs.custom', 'main_uf');
+        $rsUser = CUser::GetList(($by="ID"), ($order="desc"), array("ID"=>$userId),array("SELECT"=>array("UF_*")));
+        $rsUser = $rsUser->Fetch();
+        return $rsUser[$uf];
+
+        /*$connection = Bitrix\Main\Application::getConnection();
         $sql = "SELECT DISTINCT s.hide_deal_money FROM m_user_settings s WHERE s.user_id = " . $userId;
         $recordset = $connection->query($sql);
 
@@ -481,7 +486,7 @@ class Utility
             return $record["hide_deal_money"];
         }
 
-        return false;
+        return false;*/
     }
 
     public static function PrepareFieldsAccess($arSelectFields){

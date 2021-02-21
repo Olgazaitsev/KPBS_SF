@@ -50,13 +50,13 @@ $arAllOptions = [
             Loc::getMessage($MODULE_ID.'_FTPP'),
             Option::get($MODULE_ID, 'FTPP'),
             ['text']
-        ],
+        ],*/
         [
             'main_uf',
             Loc::getMessage($MODULE_ID.'_UF'),
             Option::get($MODULE_ID, 'UF'),
             ['text']
-        ],*/
+        ],
         /*[
             'webinars_iblock_id',
             Loc::getMessage($MODULE_ID.'_webinars_iblock_id'),
