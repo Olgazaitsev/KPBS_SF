@@ -492,6 +492,7 @@ class Utility
     public static function PrepareFieldsAccess($arSelectFields){
         $FIELDS_ACCESS_DENIED = $GLOBALS["FIELDS_ACCESS_DENIED"];
 
+
         $userId = CUser::GetID();
         $userGroups = CUser::GetUserGroup($userId);
 
