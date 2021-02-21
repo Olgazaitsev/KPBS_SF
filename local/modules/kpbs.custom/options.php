@@ -91,7 +91,7 @@ $arAllOptions = [
 
 //$ufarr = array("НИЧЕГО НЕ ВЫБРАНО", "FORMATTED_OPPORTUNITY", "OPPORTUNITY_WITH_CURRENCY", "OPPORTUNITY");
 
-//$ufarr['EMPTY'] = 'НИЧЕГО НЕ ВЫБРАНО';
+$ufarr['EMPTY'] = 'НИЧЕГО НЕ ВЫБРАНО';
 $ufarr["FORMATTED_OPPORTUNITY"] = "FORMATTED_OPPORTUNITY";
 $ufarr["OPPORTUNITY_WITH_CURRENCY"] = "OPPORTUNITY_WITH_CURRENCY";
 $ufarr["OPPORTUNITY"] = "OPPORTUNITY";
@@ -104,7 +104,7 @@ $rsUserFields = \Bitrix\Main\UserFieldTable::getList(array(
 while($arUserField=$rsUserFields->fetch())
 
 {
-    if($arUserField['USER_TYPE_ID']=='double') {
+    if($arUserField['USER_TYPE_ID']=='double' || $arUserField['USER_TYPE_ID']=='text') {
         //array_push($ufarr, $arUserField['FIELD_NAME']);
         $ufarr[$arUserField['FIELD_NAME']] = $arUserField['FIELD_NAME'];
     }
