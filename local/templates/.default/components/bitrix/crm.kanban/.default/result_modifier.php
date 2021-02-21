@@ -78,8 +78,16 @@ foreach ($FIELDS_ACCESS_DENIED as $fs) {
         }
         unset($column);
 
+        //echo "<pre>";
+        //print_r($fs["UserField"]);
+        //echo "</pre>";
+
         foreach ($arResult['ITEMS']['items'] as $i => &$item)
         {
+            //echo "<pre>";
+            //print_r($item);
+            //echo "</pre>";
+
             $item["total"] = 0;
 
             if(!in_array($item["data"]['id'], $userAssignedDealsIds) || $isDealFieldsInvisibleEnabled) {
@@ -87,7 +95,21 @@ foreach ($FIELDS_ACCESS_DENIED as $fs) {
                 $item["data"]["price_formatted"] = 0;
 
                 foreach ($item["data"]["fields"] as $f => &$field) {
-                    if ((is_array($field["code"]) && in_array($fs["UserField"], $field["code"]))) {
+                    //echo "<pre>";
+                    //print_r($field["code"]);
+                    //echo "</pre>";
+                    //echo "<pre>";
+                    //print_r($field);
+                    //echo "</pre>";
+
+
+                    //echo "<pre>";
+                    //print_r($field["code"]);
+                    //echo "</pre>";
+
+                    if ($fs["UserField"] == $field["code"]) {
+                    //if ((is_array($field["code"])) && in_array($fs["UserField"], $field["code"])) {
+
                         $field["value"] = 0;
                     }
                 }
