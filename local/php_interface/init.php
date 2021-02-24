@@ -67,11 +67,13 @@ class MyEventsHandler
 
     function my_OnBeforeCrmDealUpdate(&$arFields){
         global $APPLICATION;
-        Bitrix\Main\Diag\Debug::writeToFile("updateevent", "upevent", "__miros.log");
+        //Bitrix\Main\Diag\Debug::writeToFile("updateevent", "upevent", "__miros.log");
         //return false;
-        \Bitrix\Main\Diag\Debug::writeToFile($arFields, "dept2", "__miros.log");
+        //\Bitrix\Main\Diag\Debug::writeToFile($arFields, "dept2", "__miros.log");
         $dealId = $arFields["ID"];
         $modifiedById = $arFields["MODIFY_BY_ID"];
+
+        $stagesarchitect = array('FINAL_INVOICE', '1', '2', '4', '3', 'WON', 'LOSE', 'APOLOGY');
 
         // Проверка наличия компании в сделке
         $companyId = $arFields["COMPANY_ID"];
@@ -85,9 +87,46 @@ class MyEventsHandler
         }
         CModule::IncludeModule('crm');
         $arFilterDeal = array('ID'=>$dealId);
-        $arSelectDeal = array('ID','UF_CRM_1611675525741', 'UF_CRM_1611675557650');
+        // тут меняем код 'UF_CRM_1614162501453' на код проверки архитектора на бое
+        $arSelectDeal = array('ID', 'STAGE_ID', 'UF_CRM_1611675525741', 'UF_CRM_1611675557650', 'UF_CRM_1599830407833', 'UF_CRM_1614162501453');
 
         $obResDeal = CCrmDeal::GetListEx(false,$arFilterDeal,false,false,$arSelectDeal)->Fetch();
+        // проверка архитектора
+        if(in_array(523, $arFields['UF_CRM_1599830407833']) || in_array(523, $obResDeal['UF_CRM_1599830407833'])) {
+            //\Bitrix\Main\Diag\Debug::writeToFile('firstcond', "dept2", "__miros.log");
+            if(in_array($arFields['STAGE_ID'], $stagesarchitect) || in_array($obResDeal['STAGE_ID'], $stagesarchitect)) {
+                //\Bitrix\Main\Diag\Debug::writeToFile('secondcond', "dept2", "__miros.log");
+                //\Bitrix\Main\Diag\Debug::writeToFile($obResDeal['UF_CRM_1614162501453'], "dept2", "__miros.log");
+                //\Bitrix\Main\Diag\Debug::writeToFile($arFields['UF_CRM_1614162501453'], "dept2", "__miros.log");
+                // тут меняем код ПП и его значения = нет в соответствие с продом
+                if(!$obResDeal['UF_CRM_1614162501453'] || $obResDeal['UF_CRM_1614162501453']!=2041) {
+                    if(!$arFields['UF_CRM_1614162501453'] || $arFields['UF_CRM_1614162501453']!=2041) {
+                        \Bitrix\Main\Diag\Debug::writeToFile('third cond', "dept2", "__miros.log");
+                        $arFields['RESULT_MESSAGE'] = "Поле проверка архитектора должно иметь значение да";
+                        $APPLICATION->ThrowException($arFields['RESULT_MESSAGE']);
+                        return false;
+                    }
+                }
+            }
+        }
+
+        if(in_array(523, $arFields['UF_CRM_1599830407833']) || in_array(523, $obResDeal['UF_CRM_1599830407833'])) {
+            //\Bitrix\Main\Diag\Debug::writeToFile('firstcond', "dept2", "__miros.log");
+            if(in_array($arFields['STAGE_ID'], $stagesarchitect) || in_array($obResDeal['STAGE_ID'], $stagesarchitect)) {
+                //\Bitrix\Main\Diag\Debug::writeToFile('secondcond', "dept2", "__miros.log");
+                //\Bitrix\Main\Diag\Debug::writeToFile($obResDeal['UF_CRM_1614162501453'], "dept2", "__miros.log");
+                //\Bitrix\Main\Diag\Debug::writeToFile($arFields['UF_CRM_1614162501453'], "dept2", "__miros.log");
+                // тут меняем код ПП и его значения = нет в соответствие с продом
+                if($arFields['UF_CRM_1614162501453']==2042) {
+                    //\Bitrix\Main\Diag\Debug::writeToFile('third cond', "dept2", "__miros.log");
+                    $arFields['RESULT_MESSAGE'] = "Поле проверка архитектора должно иметь значение да";
+                    $APPLICATION->ThrowException($arFields['RESULT_MESSAGE']);
+                    return false;
+                }
+
+            }
+        }
+
         // заменить код UF_CRM_1612080094 на код поля пнр на бое, UF_CRM_1612080473 на код поля дата ПНР на бое
         // заменить значение 2039 на значение поля да поля ПНР на бое
         // пнр заполнена, дата нет (восклиц знак если нет)
