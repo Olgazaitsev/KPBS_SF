@@ -107,7 +107,7 @@ class MyEventsHandler
                             "MESSAGE_TYPE" => "S", # P - private chat, G - group chat, S - notification
                             "TO_USER_ID" => $arFields['MODIFY_BY_ID'],
                             "FROM_USER_ID" => 1,
-                            "MESSAGE" => "Поле проверка архитектора должно быть заполнено",
+                            "MESSAGE" => "СДЕЛКА НЕ СОХРАНЕНА! Сначала заполните поле Проверка архитектора",
                             "AUTHOR_ID" => 1
                             //"EMAIL_TEMPLATE" => "some",
                             //"NOTIFY_TYPE" => 2,  # 1 - confirm, 2 - notify single from, 4 - notify single
