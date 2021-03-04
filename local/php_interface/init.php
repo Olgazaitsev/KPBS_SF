@@ -92,13 +92,35 @@ class MyEventsHandler
 
         $obResDeal = CCrmDeal::GetListEx(false,$arFilterDeal,false,false,$arSelectDeal)->Fetch();
         // проверка архитектора
+        if ($arFields['UF_CRM_1614162501453']=='2042' && !$arFields['UF_CRM_1614793006']) {
+            CModule::IncludeModule('im');
+            $arFieldschat = array(
+                "MESSAGE_TYPE" => "S", # P - private chat, G - group chat, S - notification
+                "TO_USER_ID" => $arFields['MODIFY_BY_ID'],
+                "FROM_USER_ID" => 1,
+                "MESSAGE" => "СДЕЛКА НЕ СОХРАНЕНА! При выборе в поле Проверка архитектора значения нет, нужно указать причину отказа",
+                "AUTHOR_ID" => 1
+                //"EMAIL_TEMPLATE" => "some",
+                //"NOTIFY_TYPE" => 2,  # 1 - confirm, 2 - notify single from, 4 - notify single
+                //"NOTIFY_MODULE" => "main", # module id sender (ex: xmpp, main, etc)
+                //"NOTIFY_EVENT" => "IM_GROUP_INVITE", # module event id for search (ex, IM_GROUP_INVITE)
+                //"NOTIFY_TITLE" => "title to send email", # notify title to send email
+            );
+            CIMMessenger::Add($arFieldschat);
+            $arFields['RESULT_MESSAGE'] = "При выборе в поле Проверка архитектора значения нет, нужно указать причину отказа";
+            $APPLICATION->ThrowException($arFields['RESULT_MESSAGE']);
+            return false;
+        }
+
         if(in_array(523, $arFields['UF_CRM_1599830407833']) || in_array(523, $obResDeal['UF_CRM_1599830407833'])) {
             //\Bitrix\Main\Diag\Debug::writeToFile('firstcond', "dept2", "__miros.log");
             if(in_array($arFields['STAGE_ID'], $stagesarchitect) || in_array($obResDeal['STAGE_ID'], $stagesarchitect)) {
                 //\Bitrix\Main\Diag\Debug::writeToFile('secondcond', "dept2", "__miros.log");
-                //\Bitrix\Main\Diag\Debug::writeToFile($obResDeal['UF_CRM_1614162501453'], "dept2", "__miros.log");
-                //\Bitrix\Main\Diag\Debug::writeToFile($arFields['UF_CRM_1614162501453'], "dept2", "__miros.log");
+                \Bitrix\Main\Diag\Debug::writeToFile($obResDeal['UF_CRM_1614162501453'], "afields1", "__miros.log");
+                \Bitrix\Main\Diag\Debug::writeToFile($arFields, "afields2", "__miros.log");
                 // тут меняем код ПП и его значения = нет в соответствие с продом
+
+
                 if(!$obResDeal['UF_CRM_1614162501453']) {
                     if(!$arFields['UF_CRM_1614162501453']) {
                         //\Bitrix\Main\Diag\Debug::writeToFile('third cond', "dept2", "__miros.log");
