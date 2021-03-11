@@ -67,26 +67,32 @@ $arAllOptions = [
             ]
         ],*/
     ],
-    /*'sendpulse' => [
+    'kpi' => [
         [
-            'sendpulse_id',
-            Loc::getMessage($MODULE_ID.'_sendpulse_id'),
-            Option::get($MODULE_ID, 'sendpulse_id'),
+            'kb_id',
+            Loc::getMessage($MODULE_ID.'_kb_id'),
+            Option::get($MODULE_ID, 'kb_id'),
             ['text']
         ],
         [
-            'sendpulse_token',
-            Loc::getMessage($MODULE_ID.'_sendpulse_token'),
-            Option::get($MODULE_ID, 'sendpulse_token'),
+            'cn_id',
+            Loc::getMessage($MODULE_ID.'_cn_id'),
+            Option::get($MODULE_ID, 'cn_id'),
             ['text']
         ],
         [
-            'sendpulse_sync_books',
-            Loc::getMessage($MODULE_ID.'_sendpulse_sync_books'),
-            Option::get($MODULE_ID, 'sendpulse_sync_books'),
-            ['checkbox']
+            'cl_id',
+            Loc::getMessage($MODULE_ID.'_cl_id'),
+            Option::get($MODULE_ID, 'cl_id'),
+            ['text']
+        ],
+        [
+            'ib_id',
+            Loc::getMessage($MODULE_ID.'_ib_id'),
+            Option::get($MODULE_ID, 'ib_id'),
+            ['text']
         ]
-    ]*/
+    ]
 ];
 
 //$ufarr = array("НИЧЕГО НЕ ВЫБРАНО", "FORMATTED_OPPORTUNITY", "OPPORTUNITY_WITH_CURRENCY", "OPPORTUNITY");
@@ -158,13 +164,13 @@ $arTabs = [
         "TITLE" => Loc::getMessage($MODULE_ID.'_bizon365_tab_subtitle'),
         'TYPE' => 'options', //options || rights || user defined
     ],
-    /*[
-        "DIV" => "sendpulse",
-        "TAB" => Loc::getMessage($MODULE_ID.'_sendpulse_tab_title'),
+    [
+        "DIV" => "kpi",
+        "TAB" => Loc::getMessage($MODULE_ID.'_kpi'),
         "ICON" => $MODULE_ID . '_settings',
-        "TITLE" => Loc::getMessage($MODULE_ID.'_sendpulse_tab_subtitle'),
+        "TITLE" => Loc::getMessage($MODULE_ID.'_kpi'),
         'TYPE' => 'options', //options || rights || user defined
-    ]*/
+    ]
 ];
 
 $tabControl = new CAdminTabControl("tabControl", $arTabs);
