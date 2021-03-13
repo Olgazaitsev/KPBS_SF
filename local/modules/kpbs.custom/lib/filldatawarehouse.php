@@ -4,6 +4,7 @@
 namespace kpbs\custom;
 
 use Bitrix\Main\Config\Option;
+use Bitrix\Main\Type;
 
 class filldatawarehouse
 {
@@ -24,12 +25,31 @@ class filldatawarehouse
         $curweekday = date("w");
         $curweek = date("W");
         $terminatedate = date("d.m.Y", strtotime('31.12.2020'));
+        $add = new \CIBlockElement();
+        // заносим пульс
+        $toDate = new Type\DateTime();
+        $fromDate = Type\DateTime::createFromTimestamp(mktime(0, 0, 0, date('n'), date('j')-7));
+        $interval = 'day';
+        $sectionField = 'CRM';
 
-        echo $list;
-        echo $curmonthdate;
+        $usersData = \Bitrix\Intranet\UStat\UStat::getUsersGraphData(1, $fromDate, $toDate, $interval, $sectionField);
+        $usersRating = $usersData['rating']['top'];
+        foreach ($usersRating as $rating) {
+            $data = [
+                'IBLOCK_ID' => $list,
+                'ACTIVE' => 'Y',
+                'NAME' => 'CRMactivity',
+                'PROPERTY_VALUES' => [
+                    'DATA_POKAZ'=> $curdate,
+                    'MENEDZHER'=> $rating['USER_ID'],
+                    'ZNACHENIE_POKAZATELYA'=> $rating['ACTIVITY']
+                ]
+            ];
+            $id = $add->Add($data);
+        }
 
         $rsUser = \CUser::GetList(($by="ID"), ($order="desc"), array("SELECT"=>array("ID")));
-
+        // заносим прочие показатели
         while ($arResUser = $rsUser->Fetch()) {
             $kvavg = 0;
             $kvcurr = 0;
@@ -101,11 +121,7 @@ class filldatawarehouse
             }
 
             // заполнение показателей
-            $add = new \CIBlockElement();
             if($countdeals > 0) {
-                /*echo "<pre>";
-                print_r($arResUser['ID']);
-                echo "</pre>";*/
                 $data = [
                     'IBLOCK_ID' => $list,
                     'ACTIVE' => 'Y',
@@ -116,7 +132,6 @@ class filldatawarehouse
                         'ZNACHENIE_POKAZATELYA'=> $kvcurr
                     ]
                 ];
-
                 $id = $add->Add($data);
 
                 $data = [
@@ -129,7 +144,6 @@ class filldatawarehouse
                         'ZNACHENIE_POKAZATELYA'=> $kvavg
                     ]
                 ];
-
                 $id = $add->Add($data);
 
                 if($curmonthdate == '01.01' || $curmonthdate == '01.04' || $curmonthdate == '01.07' ||
@@ -144,7 +158,6 @@ class filldatawarehouse
                             'ZNACHENIE_POKAZATELYA'=> $kvopen
                         ]
                     ];
-
                     $id = $add->Add($data);
                 }
                 /*echo "<pre>";
