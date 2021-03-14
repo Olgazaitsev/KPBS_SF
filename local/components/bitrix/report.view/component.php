@@ -5,7 +5,7 @@ if (!defined("B_PROLOG_INCLUDED") || B_PROLOG_INCLUDED!==true)
 {
 	die();
 }
-\Bitrix\Main\Diag\Debug::writeToFile('1', "report", "__miros.log");
+//\Bitrix\Main\Diag\Debug::writeToFile('1', "report", "__miros.log");
 $arParams['REPORT_ID'] = isset($arParams['REPORT_ID']) ? (int)$arParams['REPORT_ID'] : 0;
 
 $isStExportEnabled = (is_array($arParams['~STEXPORT_PARAMS']));
@@ -1980,7 +1980,7 @@ $arResult['allowHorizontalScroll'] = (
 );
 // </editor-fold>
 // очистку в отчетах делаем здесь
-\Bitrix\Main\Diag\Debug::writeToFile($data, "report", "__miros.log");
+//\Bitrix\Main\Diag\Debug::writeToFile($data, "report", "__miros.log");
 
 if ($isStExport && $stExportOptions['STEXPORT_TYPE'] === 'excel')
 {
