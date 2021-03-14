@@ -27,25 +27,27 @@ class filldatawarehouse
         $terminatedate = date("d.m.Y", strtotime('31.12.2020'));
         $add = new \CIBlockElement();
         // заносим пульс
-        $toDate = new Type\DateTime();
-        $fromDate = Type\DateTime::createFromTimestamp(mktime(0, 0, 0, date('n'), date('j')-7));
-        $interval = 'day';
-        $sectionField = 'CRM';
+        if($curweekday == 6) {
+            $toDate = new Type\DateTime();
+            $fromDate = Type\DateTime::createFromTimestamp(mktime(0, 0, 0, date('n'), date('j') - 7));
+            $interval = 'day';
+            $sectionField = 'CRM';
 
-        $usersData = \Bitrix\Intranet\UStat\UStat::getUsersGraphData(1, $fromDate, $toDate, $interval, $sectionField);
-        $usersRating = $usersData['rating']['top'];
-        foreach ($usersRating as $rating) {
-            $data = [
-                'IBLOCK_ID' => $list,
-                'ACTIVE' => 'Y',
-                'NAME' => 'CRMactivity',
-                'PROPERTY_VALUES' => [
-                    'DATA_POKAZ'=> $curdate,
-                    'MENEDZHER'=> $rating['USER_ID'],
-                    'ZNACHENIE_POKAZATELYA'=> $rating['ACTIVITY']
-                ]
-            ];
-            $id = $add->Add($data);
+            $usersData = \Bitrix\Intranet\UStat\UStat::getUsersGraphData(1, $fromDate, $toDate, $interval, $sectionField);
+            $usersRating = $usersData['rating']['top'];
+            foreach ($usersRating as $rating) {
+                $data = [
+                    'IBLOCK_ID' => $list,
+                    'ACTIVE' => 'Y',
+                    'NAME' => 'CRMactivity',
+                    'PROPERTY_VALUES' => [
+                        'DATA_POKAZ' => $curdate,
+                        'MENEDZHER' => $rating['USER_ID'],
+                        'ZNACHENIE_POKAZATELYA' => $rating['ACTIVITY']
+                    ]
+                ];
+                $id = $add->Add($data);
+            }
         }
 
         $rsUser = \CUser::GetList(($by="ID"), ($order="desc"), array("SELECT"=>array("ID")));
@@ -100,9 +102,7 @@ class filldatawarehouse
                         $countmoddeals++;
                     }
                 }
-                /*echo "<pre>";
-                print_r($arResDeal);
-                echo "</pre>";*/
+
             }
             $kvavg = round($kvcurr / $countdeals,2);
 
@@ -160,21 +160,7 @@ class filldatawarehouse
                     ];
                     $id = $add->Add($data);
                 }
-                /*echo "<pre>";
-                print_r($countopen);
-                echo "</pre>";
-                echo "<pre>";
-                print_r($countmoddeals);
-                echo "</pre>";
-                echo "<pre>";
-                print_r($kvopen);
-                echo "</pre>";
-                echo "<pre>";
-                print_r($kvcurr);
-                echo "</pre>";
-                echo "<pre>";
-                print_r($kvavg);
-                echo "</pre>";*/
+
             }
             if ($countopen>0 && $countmoddeals>0) {
                 $qualact = round($countmoddeals / $countopen,2);
