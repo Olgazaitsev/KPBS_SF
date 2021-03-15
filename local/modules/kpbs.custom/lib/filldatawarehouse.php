@@ -3,8 +3,9 @@
 
 namespace kpbs\custom;
 
-use Bitrix\Main\Config\Option;
 use Bitrix\Main\Type;
+use \Bitrix\Crm\CompanyTable;
+use \Bitrix\Crm\DealTable;
 
 class filldatawarehouse
 {
@@ -12,6 +13,11 @@ class filldatawarehouse
     {
         \Bitrix\Main\Diag\Debug::writeToFile(date("Y.m.d G:i:s") ."agent", "agent", "__miros.log");
         \Bitrix\Main\Loader::includeModule('crm');
+        /*\Bitrix\Main\Loader::includeModule('main');
+        if(\CModule::IncludeModule("crm"))
+        {
+            \Bitrix\Main\Diag\Debug::writeToFile(date("Y.m.d G:i:s") ."modulecrm", "modulecrm", "__miros.log");
+        }*/
 
         $kbuf = \COption::GetOptionString('kpbs.custom', 'kb_id');
         $cnuf = \COption::GetOptionString('kpbs.custom', 'cn_id');
@@ -64,14 +70,26 @@ class filldatawarehouse
 
             $arFilter = array('ASSIGNED_BY_ID'=> $arResUser['ID'], 'CLOSED'=>'Y', '>CLOSEDATE'=>$terminatedate);
             $arSelect = array('ID', 'ASSIGNED_BY_ID', 'CLOSED', 'CLOSEDATE', 'DATE_MODIFY',  $kbuf);
-            $obResDeal = \CCrmDeal::GetListEx(false,$arFilter,false,false,$arSelect);
+            //$obResDeal = CCrmDeal::GetListEx(false,$arFilter,false,false,$arSelect);
+            $obResDeal = DealTable::getList([
+                'filter' => $arFilter,
+                'select' => $arSelect
+            ]);
+
+
+            //\Bitrix\Main\Diag\Debug::writeToFile($obResDeal, date("Y.m.d G:i:s") ."deals", "__miros.log");
             while ($arResDealfirst = $obResDeal->Fetch()) {
                 array_push($arResDeals, $arResDealfirst);
             }
 
             $arFilter = array('ASSIGNED_BY_ID'=> $arResUser['ID'], 'CLOSED'=>'N');
             $arSelect = array('ID', 'ASSIGNED_BY_ID', 'CLOSED', 'CLOSEDATE', 'DATE_MODIFY',  $kbuf);
-            $obResDeal = \CCrmDeal::GetListEx(false,$arFilter,false,false,$arSelect);
+            //$obResDeal = CCrmDeal::GetListEx(false,$arFilter,false,false,$arSelect);
+            $obResDeal = DealTable::getList([
+                'filter' => $arFilter,
+                'select' => $arSelect
+            ]);
+
             while ($arResDealsecond = $obResDeal->Fetch()) {
                 array_push($arResDeals, $arResDealsecond);
             }
@@ -104,7 +122,10 @@ class filldatawarehouse
                 }
 
             }
-            $kvavg = round($kvcurr / $countdeals,2);
+            if($countdeals>0) {
+                $kvavg = round($kvcurr / $countdeals,2);
+            }
+
 
 
             // анализ компаний
@@ -113,7 +134,11 @@ class filldatawarehouse
             $countcnt = 0;
             $arFilter = array('ASSIGNED_BY_ID'=> $arResUser['ID']);
             $arSelect = array('ID', 'ASSIGNED_BY_ID', $cnuf, $cluf);
-            $obResCompany = \CCrmCompany::GetListEx(false,$arFilter,false,false,$arSelect);
+            //$obResCompany = CCrmCompany::GetListEx(false,$arFilter,false,false,$arSelect);
+            $obResCompany = CompanyTable::getList([
+                'filter' => $arFilter,
+                'select' => $arSelect
+            ]);
             while ($arResCompany = $obResCompany->Fetch()) {
                 $countcnt++;
                 $cntnetwork += $arResCompany[$cnuf];
@@ -206,6 +231,6 @@ class filldatawarehouse
             }
 
         }
-        return 'kpbs\custom\filldatawarehouse::executefilling();';
+        return '\kpbs\custom\filldatawarehouse::executefilling();';
     }
 }
