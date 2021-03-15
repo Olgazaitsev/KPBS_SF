@@ -354,6 +354,4 @@ class MyEventsHandler
         return $res;
 //        Bitrix\Main\Diag\Debug::writeToFile($company,"company","/debug.txt");
     }
-
-
 }

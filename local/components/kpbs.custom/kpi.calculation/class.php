@@ -11,7 +11,14 @@ class KpbsKpicalculationComponent extends CBitrixComponent
 
     public function executeComponent()
     {
-        $rsUser = \CUser::GetList(($by="ID"), ($order="desc"), array("SELECT"=>array("ID", "NAME", "LAST_NAME")));
+        $filter = Array
+        (
+            "ACTIVE"              => "Y",
+            //"GROUPS_ID"           => Array(1,4,10)
+        );
+
+
+        $rsUser = \CUser::GetList(($by="ID"), ($order="desc"), $filter);
         // заносим прочие показатели
         $users = array();
 
