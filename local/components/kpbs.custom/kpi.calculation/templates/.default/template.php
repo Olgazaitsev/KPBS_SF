@@ -35,7 +35,7 @@ Asset::getInstance()->addJs("//cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/s
 <script>
     $(document).ready(function() {
         $("#btnCalcfact").click(function(){
-            BX.ajax.runAction('kpbs:custom.api.kpicalcul.getStat', {
+            BX.ajax.runAction('kpbs:custom.api.signal.getSignal', {
                 data: {
                     user: '1',
                     from: '01.01'

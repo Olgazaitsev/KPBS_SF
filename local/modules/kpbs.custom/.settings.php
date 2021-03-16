@@ -3,7 +3,7 @@ return [
     'controllers' => [
         'value' => [
             'namespaces' => [
-                '\\kpbs\\custom' => 'api'
+                '\\kpbs\\custom\\Controller' => 'api'
             ]
         ],
         'readonly' => true
