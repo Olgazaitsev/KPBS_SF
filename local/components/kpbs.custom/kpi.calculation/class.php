@@ -13,8 +13,9 @@ class KpbsKpicalculationComponent extends CBitrixComponent
     {
         $filter = Array
         (
-            "ACTIVE"              => "Y",
-            //"GROUPS_ID"           => Array(1,4,10)
+            "ACTIVE" => "Y",
+            "!ID" => 61
+            //"GROUPS_ID"           => Array(1)
         );
 
 

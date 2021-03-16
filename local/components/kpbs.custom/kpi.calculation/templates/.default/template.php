@@ -15,7 +15,7 @@ Asset::getInstance()->addJs("//cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/s
 </head>
 <body>
 <div class="db">
-        <p>Выберите сотрудника, год и квартал для целей построения отчета</p>
+        <p>Выберите год, квартал и сотрудников для целей построения отчета</p>
         <p class="label_title">Год</p>
         <div id="years" class="container">
         </div>
@@ -93,18 +93,32 @@ Asset::getInstance()->addJs("//cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/s
         });
 
         $("#btnCalcfact").click(function(){
-            BX.ajax.runAction('kpbs:custom.api.signal.getSignal', {
-                data: {
-                    user: '1',
-                    from: '01.01'
-                }
-            }).then(function (response) {
-                console.log(response);
-            }, function (error) {
-                //сюда будут приходить все ответы, у которых status !== 'success'
-                console.log(error);
+            $("#resultfacttext").empty()
+            $("#resultfactdate").empty()
+            var setusersf = $("#userf").val()
+            var year = $("#year").val()
+            var quarter = $("#quarter").val()
+            setusersf.forEach(function (setuserf) {
+                if(setuserf!='all') {
+                    BX.ajax.runAction('kpbs:custom.api.signal.getSignal', {
+                        data: {
+                            user: setuserf,
+                            year: year,
+                            quarter: quarter
+                        }
+                    }).then(function (response) {
+                        console.log(response);
+                    }, function (error) {
+                        //сюда будут приходить все ответы, у которых status !== 'success'
+                        console.log(error);
 
-            });
+                    });
+                }
+            })
+
+
+
+
 
 
             /*$("#resultfacttext").empty()
