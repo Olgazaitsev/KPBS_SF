@@ -3,65 +3,6 @@ P.highlight {
 }
 
 .db {
-}
-
-.tabs {
-    width: 98.5% !important;
-    background-color: #eef2f4;
-    border: none;
-    border-radius: 7px;
-    border-top-left-radius: 0;
-    border-top-right-radius: 0;
-    padding-left: 20px;
-    padding-bottom: 30px;
-    padding-top: 10px;
-
-}
-
-ul {
-    padding: 0px;
-    margin: 0px;
-}
-
-li.title {
-    font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
-    font-size: 14px;
-    color: #5e6675;
-    cursor: pointer;
-    display: inline-block;
-    list-style-type: none;
-    padding: 5px;
-    margin: 0px;
-    background: #e0e5e9;
-    color: #000000;
-    padding-left: 15px;
-    padding-right: 15px;
-    padding-top: 12px;
-    padding-bottom: 12px;
-    border-top-left-radius: 7px;
-    border-top-right-radius: 7px;
-}
-
-.tab {
-    text-align: justify;
-}
-
-.tab p {
-    font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
-    font-size: 14px;
-    color: #000;
-}
-
-.titles .active {
-    background-color: #edf1f3;
-    color: #000;
-    font-weight: bold;
-    padding-left: 15px;
-    padding-right: 15px;
-    padding-top: 12px;
-    padding-bottom: 12px;
-    border-top-left-radius: 7px;
-    border-top-right-radius: 7px;
 
 }
 
@@ -173,12 +114,12 @@ li.title {
 
 /* Select */
 
-#container {
+.container {
     width: 320px;
     position: relative;
 }
 
-#container select {
+.container select {
     border: 1px solid #c6cdd3;
     width: 320px;
     padding-top: 10px;
@@ -193,7 +134,7 @@ li.title {
     border-radius: 4px;
 }
 
-/*#container:before {
+.container:before {
     position: absolute;
     top: 50%;
     right: 15px;
@@ -206,7 +147,7 @@ li.title {
     z-index: 9999;
 }
 
-#container:after {
+.container:after {
     position: absolute;
     top: 50%;
     right: 8px;
@@ -216,7 +157,7 @@ li.title {
     content: "";
     transition: all 250ms ease;
     transform: translateX(-50%) translateY(-50%) rotate(-45deg);;
-}*/
+}
 
 
 .select2-container {
