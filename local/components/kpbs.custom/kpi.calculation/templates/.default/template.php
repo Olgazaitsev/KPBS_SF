@@ -67,7 +67,6 @@ Asset::getInstance()->addJs("//cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/s
         $("#quarters").html(select);
 
         var users =  <?= \CUtil::phpToJSObject($arResult['USERS']);?>;
-        console.log(users)
 
         var select3 = $("<select class=\"js-select3\" multiple=\"multiple\"></select>").attr("id", "userf").attr("name", "userf").attr("multiple", "multiple");
         select3.append($("<option></option>").attr("value", 'all').text('Выбрать всех'));
@@ -104,10 +103,13 @@ Asset::getInstance()->addJs("//cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/s
                         data: {
                             user: setuserf,
                             year: year,
-                            quarter: quarter
+                            quater: quarter
                         }
                     }).then(function (response) {
                         console.log(response);
+                        var resultarr = response.data
+                        drawfact(resultarr, users, setuserf)
+
                     }, function (error) {
                         //сюда будут приходить все ответы, у которых status !== 'success'
                         console.log(error);
@@ -115,23 +117,53 @@ Asset::getInstance()->addJs("//cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/s
                     });
                 }
             })
-
-
-
-
-
-
-            /*$("#resultfacttext").empty()
-            $("#resultfactdate").empty()
-            $(".tabs").width('100%')
-            var setusersf = $("#userf").val()
-            setusersf.forEach(function (setuserf) {
-                if(setuserf!='all') {
-                    generatefact(setuserf)
-                }
-            })*/
         });
     })
+
+    function drawfact(resultarr, users, setuserf) {
+        //console.log(resultarr)
+        //console.log(users)
+        //console.log(setuserf)
+        var managername
+        $.each(users,function(index,users) {
+            if (users.ID == setuserf) {
+                managername = users.NAME + ' ' + users.LAST_NAME
+            }
+        })
+        var manager = $("<p></p>").text("Менеджер "+ managername)
+        $("#resultfactdate").append(manager)
+        var table = $("<table></table>").attr("id", "tablefact").attr("name", "tablefact").attr("border", 1).attr("cellspacing",0)
+        var tr = $("<tr></tr>")
+        tr.append($("<th></th>").text("Показатель").width(200))
+        tr.append($("<th></th>").text("Вес").width(70))
+        tr.append($("<th></th>").text("Значение").width(70))
+        tr.append($("<th></th>").text("Балл").width(70))
+        table.append(tr)
+        for (var key in resultarr) {
+            tr = $("<tr></tr>")
+            var kpiname
+            if(key=='KVq') {
+                kpiname = 'КВ - интегральный, рост за период %'
+            } else if(key=='KVavg') {
+                kpiname = 'КВ - средний по продавцу, диапазон'
+            } else if(key=='QualAct') {
+                kpiname = 'Качество работы с системой - актуальность'
+            } else if(key=='CRMactivity') {
+                kpiname = 'Качество работы с системой - вовлеченность'
+            } else if(key=='CNTLev') {
+                kpiname = 'Средний уровень контакта, диапазон'
+            } else if(key=='CNTNet') {
+                kpiname = 'Средняя сеть контактов по заказчику, диапазон'
+            }
+
+            tr.append($("<td></td>").text(kpiname))
+            tr.append($("<td></td>").text(resultarr[key]['weight']))
+            tr.append($("<td></td>").text(resultarr[key]['value']))
+            tr.append($("<td></td>").text(resultarr[key]['rate']))
+            table.append(tr)
+        }
+        $("#resultfactdate").append(table)
+    }
 </script>
 
 

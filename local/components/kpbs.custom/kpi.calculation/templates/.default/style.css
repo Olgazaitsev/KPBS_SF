@@ -252,7 +252,7 @@ P.highlight {
 }
 
 #tablefact {
-    border: 1px solid #c6cdd3;
+    border: 0px solid #c6cdd3;
     border-radius: 4px;
     display: block;
     overflow: auto;
@@ -288,6 +288,7 @@ P.highlight {
 #tablefact tr > td {
     border: none;
     border-right: 1px solid #c6cdd3;
+    border-left: 1px solid #c6cdd3;
     color: #333;
     border-bottom: 1px solid #c6cdd3;
     text-align: left;
