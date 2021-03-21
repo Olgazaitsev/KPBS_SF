@@ -33,7 +33,7 @@ class filldatawarehouse
         $terminatedate = date("d.m.Y", strtotime('31.12.2020'));
         $add = new \CIBlockElement();
         // заносим пульс
-        if($curweekday == 6) {
+        /*if($curweekday == 6) {
             $toDate = new Type\DateTime();
             $fromDate = Type\DateTime::createFromTimestamp(mktime(0, 0, 0, date('n'), date('j') - 7));
             $interval = 'day';
@@ -54,9 +54,15 @@ class filldatawarehouse
                 ];
                 $id = $add->Add($data);
             }
-        }
+        }*/
 
-        $rsUser = \CUser::GetList(($by="ID"), ($order="desc"), array("SELECT"=>array("ID")));
+        $filter = Array
+        (
+            "ACTIVE" => "Y",
+            "!ID" => 61
+        );
+
+        $rsUser = \CUser::GetList(($by="ID"), ($order="desc"), $filter);
         // заносим прочие показатели
         while ($arResUser = $rsUser->Fetch()) {
             $kvavg = 0;
@@ -67,6 +73,7 @@ class filldatawarehouse
             $countopen = 0;
             // анализ сделок
             $arResDeals = array();
+            $crmactivity = 0;
 
             $arFilter = array('ASSIGNED_BY_ID'=> $arResUser['ID'], 'CLOSED'=>'Y', '>CLOSEDATE'=>$terminatedate);
             $arSelect = array('ID', 'ASSIGNED_BY_ID', 'CLOSED', 'CLOSEDATE', 'DATE_MODIFY',  $kbuf);
@@ -143,6 +150,21 @@ class filldatawarehouse
                 $countcnt++;
                 $cntnetwork += $arResCompany[$cnuf];
                 $cntlevel += $arResCompany[$cluf];
+            }
+
+
+            //crmactivity
+            if($curweekday == 6) {
+                $toDate = new Type\DateTime();
+                $fromDate = Type\DateTime::createFromTimestamp(mktime(0, 0, 0, date('n'), date('j') - 7));
+                $interval = 'day';
+                $sectionField = 'CRM';
+
+                $usersData = \Bitrix\Intranet\UStat\UStat::getUsersGraphData($arResUser['ID'], $fromDate, $toDate, $interval, $sectionField);
+
+                foreach($usersData['data'] as $userating) {
+                    $crmactivity += $userating['CRM'];
+                }
             }
 
             // заполнение показателей
@@ -230,6 +252,19 @@ class filldatawarehouse
                 $id = $add->Add($data);
             }
 
+            if($crmactivity>0) {
+                $data = [
+                    'IBLOCK_ID' => $list,
+                    'ACTIVE' => 'Y',
+                    'NAME' => 'CRMactivity',
+                    'PROPERTY_VALUES' => [
+                        'DATA_POKAZ' => $curdate,
+                        'MENEDZHER' => $arResUser['ID'],
+                        'ZNACHENIE_POKAZATELYA' => $crmactivity
+                    ]
+                ];
+                $id = $add->Add($data);
+            }
         }
         return '\kpbs\custom\filldatawarehouse::executefilling();';
     }
