@@ -69,6 +69,78 @@ $arAllOptions = [
     ],
     'kpi' => [
         [
+            'm1_val',
+            Loc::getMessage($MODULE_ID.'_m1_val'),
+            Option::get($MODULE_ID, 'm1_val'),
+            ['text']
+        ],
+        [
+            'm2_val',
+            Loc::getMessage($MODULE_ID.'_m2_val'),
+            Option::get($MODULE_ID, 'm2_val'),
+            ['text']
+        ],
+        [
+            'm3_val',
+            Loc::getMessage($MODULE_ID.'_m3_val'),
+            Option::get($MODULE_ID, 'm3_val'),
+            ['text']
+        ],
+        [
+            'm4_val',
+            Loc::getMessage($MODULE_ID.'_m4_val'),
+            Option::get($MODULE_ID, 'm4_val'),
+            ['text']
+        ],
+        [
+            'm5_val',
+            Loc::getMessage($MODULE_ID.'_m5_val'),
+            Option::get($MODULE_ID, 'm5_val'),
+            ['text']
+        ],
+        [
+            'm6_val',
+            Loc::getMessage($MODULE_ID.'_m6_val'),
+            Option::get($MODULE_ID, 'm6_val'),
+            ['text']
+        ],
+        [
+            'w1_val',
+            Loc::getMessage($MODULE_ID.'_w1_val'),
+            Option::get($MODULE_ID, 'w1_val'),
+            ['text']
+        ],
+        [
+            'w2_val',
+            Loc::getMessage($MODULE_ID.'_w2_val'),
+            Option::get($MODULE_ID, 'w2_val'),
+            ['text']
+        ],
+        [
+            'w3_val',
+            Loc::getMessage($MODULE_ID.'_w3_val'),
+            Option::get($MODULE_ID, 'w3_val'),
+            ['text']
+        ],
+        [
+            'w4_val',
+            Loc::getMessage($MODULE_ID.'_w4_val'),
+            Option::get($MODULE_ID, 'w4_val'),
+            ['text']
+        ],
+        [
+            'w5_val',
+            Loc::getMessage($MODULE_ID.'_w5_val'),
+            Option::get($MODULE_ID, 'w5_val'),
+            ['text']
+        ],
+        [
+            'w6_val',
+            Loc::getMessage($MODULE_ID.'_w6_val'),
+            Option::get($MODULE_ID, 'w6_val'),
+            ['text']
+        ],
+        [
             'kb_id',
             Loc::getMessage($MODULE_ID.'_kb_id'),
             Option::get($MODULE_ID, 'kb_id'),
@@ -87,9 +159,45 @@ $arAllOptions = [
             ['text']
         ],
         [
+            'pl_id',
+            Loc::getMessage($MODULE_ID.'_pl_id'),
+            Option::get($MODULE_ID, 'pl_id'),
+            ['text']
+        ],
+        [
+            'mk_id',
+            Loc::getMessage($MODULE_ID.'_mk_id'),
+            Option::get($MODULE_ID, 'mk_id'),
+            ['text']
+        ],
+        [
+            'mb_id',
+            Loc::getMessage($MODULE_ID.'_mb_id'),
+            Option::get($MODULE_ID, 'mb_id'),
+            ['text']
+        ],
+        [
+            'mp_id',
+            Loc::getMessage($MODULE_ID.'_mp_id'),
+            Option::get($MODULE_ID, 'mp_id'),
+            ['text']
+        ],
+        [
             'ib_id',
             Loc::getMessage($MODULE_ID.'_ib_id'),
             Option::get($MODULE_ID, 'ib_id'),
+            ['text']
+        ],
+        [
+            'ib_bon_id',
+            Loc::getMessage($MODULE_ID.'_ib_bon_id'),
+            Option::get($MODULE_ID, 'ib_bon_id'),
+            ['text']
+        ],
+        [
+            'ib_uu_id',
+            Loc::getMessage($MODULE_ID.'_ib_uu_id'),
+            Option::get($MODULE_ID, 'ib_uu_id'),
             ['text']
         ]
     ]
