@@ -191,11 +191,25 @@ Asset::getInstance()->addJs("//cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/s
                 kpiname = 'Средняя сеть контактов по заказчику, диапазон'
             } else if(key=='X_ALL') {
                 kpiname = 'TOTAL POINTS'
+            } else if(key=='X_BONUS1') {
+                kpiname = 'Плановая маржа на год'
+            } else if(key=='X_BONUS2') {
+                kpiname = 'Текущая маржа'
+            } else if(key=='X_BONUS3') {
+                kpiname = 'БАЗА для формирования бонуса'
+            } else if(key=='X_BONUS4') {
+                kpiname = 'Бонусные БАЛЛЫ'
+            } else if(key=='X_BONUS5') {
+                kpiname = 'Выплаченный бонус'
+            } else if(key=='X_BONUS6') {
+                kpiname = 'Начисленный бонус'
+            } else if(key=='X_BONUS7') {
+                kpiname = 'К выплате в конце квартала'
             }
 
             tr.append($("<td></td>").text(kpiname))
             if(curdate) {
-                var color = 'green'
+                var color = 'SpringGreen'
                 if(resultarr[key]['c']['kach']==0) {
                     color = 'red'
                 } else if(resultarr[key]['c']['kach']==0.5) {
@@ -203,15 +217,18 @@ Asset::getInstance()->addJs("//cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/s
                 }
                 tr.append($("<td></td>").text(resultarr[key]['c']['rate']).width(100).attr('bgcolor', color))
             }
-            $.each(quarters,function(index,quarter) {
-                var color = 'green'
-                if(resultarr[key][quarter]['kach']==0) {
-                    color = 'red'
-                } else if(resultarr[key][quarter]['kach']==0.5) {
-                    color = 'yellow'
-                }
-                tr.append($("<td></td>").text(resultarr[key][quarter]['rate']).width(100).attr('bgcolor', color))
-            })
+            if(key=='X1' || key=='X2' || key=='X3' || key=='X4' || key=='X5' || key=='X6' || key=='X_ALL') {
+                $.each(quarters,function(index,quarter) {
+                    var color = 'SpringGreen'
+                    if(resultarr[key][quarter]['kach']==0) {
+                        color = 'red'
+                    } else if(resultarr[key][quarter]['kach']==0.5) {
+                        color = 'yellow'
+                    }
+                    tr.append($("<td></td>").text(resultarr[key][quarter]['rate']).width(100).attr('bgcolor', color))
+                })
+            }
+
             table.append(tr)
         }
         $("#resultfactdate").append(table)

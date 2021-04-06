@@ -5,6 +5,8 @@ use Bitrix\Main;
 use Bitrix\Crm;
 use Bitrix\Main\Engine\Controller;
 use Bitrix\Main\Config\Option;
+use \Bitrix\Crm\DealTable;
+use \Bitrix\Main\Loader;
 
 class Signal extends Controller
 {
@@ -19,8 +21,8 @@ class Signal extends Controller
         $CNTNetweight = \COption::GetOptionString('kpbs.custom', 'w5_val');
         $CNTLevweight = \COption::GetOptionString('kpbs.custom', 'w6_val');
         $KVavgmax = \COption::GetOptionString('kpbs.custom', 'm2_val');
-        $QualActmax = \COption::GetOptionString('kpbs.custom', 'm3_val');
-        $CRMactivitytmax = \COption::GetOptionString('kpbs.custom', 'm4_val');
+        $QualActmax = \COption::GetOptionString('kpbs.custom', 'm3_val')/100;
+        $CRMactivitytmax = \COption::GetOptionString('kpbs.custom', 'm4_val')/100;
         $CNTLevmax = \COption::GetOptionString('kpbs.custom', 'm6_val');
 
         // подсчет показателей по текущей дате
@@ -145,7 +147,7 @@ class Signal extends Controller
 
             $KVcurr = round($KVcurr/$countalldays,2);
             if($KVq!=0) {
-                $KVq = round($KVcurr/$KVq,2);
+                $KVq = (round($KVcurr/$KVq,2)-1)*100;
             }
             if($KVq<=10) {
                 $KVqkach = 0;
@@ -163,7 +165,7 @@ class Signal extends Controller
             } else {
                 $KVavgkach = 1;
             }
-            $KVavgrate = ($KVavg/$KVavgmax)*($KVavgweight*$KVavgkach);
+            $KVavgrate = round(($KVavg/$KVavgmax)*($KVavgweight*$KVavgkach),2);
             $QualAct = round($QualAct/$countmonfri,2);
             if($QualAct<=0.75) {
                 $QualActkach = 0;
@@ -172,7 +174,7 @@ class Signal extends Controller
             } else {
                 $QualActkach = 1;
             }
-            $QualActrate = ($QualAct/$QualActmax)*($QualActweight*$QualActkach);
+            $QualActrate = round(($QualAct/$QualActmax)*($QualActweight*$QualActkach),2);
             $CNTLev = round($CNTLev/$countalldays,2);
             $CRMactivity = round($CRMactivity/$countsat,2);
             if($CRMactivity<=0.5) {
@@ -182,7 +184,7 @@ class Signal extends Controller
             } else {
                 $CRMactivitykach = 1;
             }
-            $CRMactivityrate = ($CRMactivity/$CRMactivitytmax)*($CRMactivityweight*$CRMactivitykach);
+            $CRMactivityrate = round(($CRMactivity/$CRMactivitytmax)*($CRMactivityweight*$CRMactivitykach),2);
 
             $CNTNet = round($CNTNet/$countalldays,2);
             if($CNTNet<=1) {
@@ -200,7 +202,7 @@ class Signal extends Controller
             } else {
                 $CNTLevkach = 1;
             }
-            $CNTLevrate = ($CNTLev/$CNTLevmax)*$CNTLevweight*$CNTLevkach;
+            $CNTLevrate = round(($CNTLev/$CNTLevmax)*($CNTLevweight*$CNTLevkach),2);
 
             $totalkach = ($KVqkach+$KVavgkach+$QualActkach+$CRMactivitykach+$CNTNetkach+$CNTLevkach)/6;
             if($totalkach<0.25) {
@@ -211,32 +213,116 @@ class Signal extends Controller
                 $totalkach = 1;
             }
 
+            $totalpoints = round($KVqrate+$KVavgrate+$QualActrate+$CRMactivityrate+$CNTNetrate+$CNTLevrate,2);
+
             $resultstat['X1']['c']['value']=$KVq;
             $resultstat['X1']['c']['weight']=$KVqweight;
-            $resultstat['X1']['c']['rate']=$KVqrate;
+            $resultstat['X1']['c']['rate']=$KVqrate."%";
             $resultstat['X1']['c']['kach']=$KVqkach;
             $resultstat['X2']['c']['value']=$KVavg;
             $resultstat['X2']['c']['weight']=$KVavgweight;
-            $resultstat['X2']['c']['rate']=$KVavgrate;
+            $resultstat['X2']['c']['rate']=$KVavgrate.'%';
             $resultstat['X2']['c']['kach']=$KVavgkach;
             $resultstat['X3']['c']['value']=$QualAct;
             $resultstat['X3']['c']['weight']=$QualActweight;
-            $resultstat['X3']['c']['rate']=$QualActrate;
+            $resultstat['X3']['c']['rate']=$QualActrate.'%';
             $resultstat['X3']['c']['kach']=$QualActkach;
             $resultstat['X4']['c']['value']=$CRMactivity;
             $resultstat['X4']['c']['weight']=$CRMactivityweight;
-            $resultstat['X4']['c']['rate']=$CRMactivityrate;
+            $resultstat['X4']['c']['rate']=$CRMactivityrate.'%';
             $resultstat['X4']['c']['kach']=$CRMactivitykach;
             $resultstat['X5']['c']['value']=$CNTNet;
             $resultstat['X5']['c']['weight']=$CNTNetweight;
-            $resultstat['X5']['c']['rate']=$CNTNetrate;
+            $resultstat['X5']['c']['rate']=$CNTNetrate.'%';
             $resultstat['X5']['c']['kach']=$CNTNetkach;
             $resultstat['X6']['c']['value']=$CNTLev;
             $resultstat['X6']['c']['weight']=$CNTLevweight;
-            $resultstat['X6']['c']['rate']=$CNTLevrate;
+            $resultstat['X6']['c']['rate']=$CNTLevrate.'%';
             $resultstat['X6']['c']['kach']=$CNTLevkach;
             $resultstat['X_ALL']['c']['kach']=$totalkach;
-            $resultstat['X_ALL']['c']['rate']=$KVqrate+$KVavgrate+$QualActrate+$CRMactivityrate+$CNTNetrate+$CNTLevrate;
+            $resultstat['X_ALL']['c']['rate']=$totalpoints.'%';
+
+            Loader::includeModule('crm');
+            Loader::includeModule('iblock');
+
+            $quaterbonus = [
+                '1' => 0.5,
+                '2' => 0.75,
+                '3' => 0.75,
+                '4' => 1
+            ];
+
+            $planf = \COption::GetOptionString('kpbs.custom', 'pl_id');
+            $markf = \COption::GetOptionString('kpbs.custom', 'mk_id');
+            $maxbf = \COption::GetOptionString('kpbs.custom', 'mb_id');
+            $minplf = \COption::GetOptionString('kpbs.custom', 'mp_id');
+            $listb = \COption::GetOptionString('kpbs.custom', 'ib_bon_id');
+            $listuu = \COption::GetOptionString('kpbs.custom', 'ib_uu_id');
+
+            $rsUser = \CUser::GetByID($user);
+            $arUser = $rsUser->Fetch();
+
+            $deals = DealTable::getList([
+                'filter' => [
+                    'ASSIGNED_BY_ID'=> $user, 'CLOSED'=>'Y', '>=CLOSEDATE'=>$from2, '<=CLOSEDATE'=>$to, 'STAGE_ID'=>'WON'
+                ],
+                'select' => [
+                    'ID'
+                ]
+            ]);
+
+            $totalmargin = 0;
+            $bonuspaid = 0;
+
+            $pattern = '/[^0-9]/';
+
+            while ($arResDeals = $deals->fetch()) {
+                $dealid = $arResDeals['ID'];
+                $arSelect = Array("ID", "PROPERTY_SDELKA", "PROPERTY_MARZHA_FAKTICHESKAYA");
+                $arFilter = Array("IBLOCK_ID"=>$listuu, "ACTIVE_DATE"=>"Y", "ACTIVE"=>"Y",
+                    "PROPERTY_SDELKA" => $dealid
+                );
+                $res = \CIBlockElement::GetList(Array(), $arFilter, false, false, $arSelect)->fetch();
+                $totalmargin += preg_replace($pattern, "", $res['PROPERTY_MARZHA_FAKTICHESKAYA_VALUE']);
+
+            }
+
+            $arSelect = Array("ID", "PROPERTY_SDELKA", "PROPERTY_SUMMA_VYPLATY");
+            $arFilter = Array("IBLOCK_ID"=>$listb, "ACTIVE_DATE"=>"Y", "ACTIVE"=>"Y",
+                "PROPERTY_SOTRUDNIK" => $user,
+                ">="."PROPERTY_DATA_VYPLATY" => date("Y-m-d",strtotime($from2)),
+                "<="."PROPERTY_DATA_VYPLATY" => date("Y-m-d",strtotime($to))
+            );
+            $res = \CIBlockElement::GetList(Array(), $arFilter, false, false, $arSelect)->fetch();
+            $bonuspaid += $res['PROPERTY_SUMMA_VYPLATY_VALUE'];
+
+            if($arUser[$planf]>0) {
+                $planperc = $totalmargin/$arUser[$planf]*100;
+
+                if($planperc>=$arUser[$minplf]) {
+                    $bonusbase = $totalmargin*$arUser[$markf]*$quaterbonus[$curkv];
+                    $bonustopay = $bonusbase*($totalpoints/100)*($arUser[$maxbf]/100);
+                }
+            }
+            $resultstat['X_BONUS1']['c']['kach'] = 1;
+            $resultstat['X_BONUS1']['c']['rate'] = $arUser[$planf].'p.';
+            $resultstat['X_BONUS2']['c']['kach'] = 1;
+            $resultstat['X_BONUS2']['c']['rate'] = $totalmargin.'p.='.$planperc.'% от плана';
+            $resultstat['X_BONUS3']['c']['kach'] = 1;
+            $resultstat['X_BONUS3']['c']['rate'] = $bonusbase.'p.';
+            $resultstat['X_BONUS4']['c']['kach'] = 1;
+            $resultstat['X_BONUS4']['c']['rate'] = $totalpoints.'%';
+            $resultstat['X_BONUS5']['c']['kach'] = 1;
+            $resultstat['X_BONUS5']['c']['rate'] = $bonuspaid.'p.';
+            $resultstat['X_BONUS6']['c']['kach'] = 1;
+            $resultstat['X_BONUS6']['c']['rate'] = $bonustopay.'p.';
+            if($bonustopay>$bonuspaid) {
+                $resultstat['X_BONUS7']['c']['kach'] = 1;
+                $resultstat['X_BONUS7']['c']['rate'] = $bonustopay-$bonuspaid;
+            } else {
+                $resultstat['X_BONUS7']['c']['kach'] = 1;
+                $resultstat['X_BONUS7']['c']['rate'] = 0;
+            }
         }
 
         // подсчет показателей по кварталами
@@ -362,7 +448,7 @@ class Signal extends Controller
 
             $KVcurr = round($KVcurr/$countalldays,2);
             if($KVq!=0) {
-                $KVq = round($KVcurr/$KVq,2);
+                $KVq = (round($KVcurr/$KVq,2)-1)*100;
             }
             if($KVq<=10) {
                 $KVqkach = 0;
@@ -380,7 +466,7 @@ class Signal extends Controller
             } else {
                 $KVavgkach = 1;
             }
-            $KVavgrate = ($KVavg/$KVavgmax)*($KVavgweight*$KVavgkach);
+            $KVavgrate = round(($KVavg/$KVavgmax)*($KVavgweight*$KVavgkach),2);
             $QualAct = round($QualAct/$countmonfri,2);
             if($QualAct<=0.75) {
                 $QualActkach = 0;
@@ -389,7 +475,7 @@ class Signal extends Controller
             } else {
                 $QualActkach = 1;
             }
-            $QualActrate = ($QualAct/$QualActmax)*($QualActweight*$QualActkach);
+            $QualActrate = round(($QualAct/$QualActmax)*($QualActweight*$QualActkach),2);
             $CNTLev = round($CNTLev/$countalldays,2);
             $CRMactivity = round($CRMactivity/$countsat,2);
             if($CRMactivity<=0.5) {
@@ -399,7 +485,7 @@ class Signal extends Controller
             } else {
                 $CRMactivitykach = 1;
             }
-            $CRMactivityrate = ($CRMactivity/$CRMactivitytmax)*($CRMactivityweight*$CRMactivitykach);
+            $CRMactivityrate = round(($CRMactivity/$CRMactivitytmax)*($CRMactivityweight*$CRMactivitykach),2);
 
             $CNTNet = round($CNTNet/$countalldays,2);
             if($CNTNet<=1) {
@@ -417,7 +503,7 @@ class Signal extends Controller
             } else {
                 $CNTLevkach = 1;
             }
-            $CNTLevrate = ($CNTLev/$CNTLevmax)*$CNTLevweight*$CNTLevkach;
+            $CNTLevrate = round(($CNTLev/$CNTLevmax)*($CNTLevweight*$CNTLevkach),2);
 
             $totalkach = ($KVqkach+$KVavgkach+$QualActkach+$CRMactivitykach+$CNTNetkach+$CNTLevkach)/6;
             if($totalkach<0.25) {
@@ -430,30 +516,30 @@ class Signal extends Controller
 
             $resultstat['X1'][$quater]['value']=$KVq;
             $resultstat['X1'][$quater]['weight']=$KVqweight;
-            $resultstat['X1'][$quater]['rate']=$KVqrate;
+            $resultstat['X1'][$quater]['rate']=$KVqrate.'%';
             $resultstat['X1'][$quater]['kach']=$KVqkach;
             $resultstat['X2'][$quater]['value']=$KVavg;
             $resultstat['X2'][$quater]['weight']=$KVavgweight;
-            $resultstat['X2'][$quater]['rate']=$KVavgrate;
+            $resultstat['X2'][$quater]['rate']=$KVavgrate.'%';
             $resultstat['X2'][$quater]['kach']=$KVavgkach;
             $resultstat['X3'][$quater]['value']=$QualAct;
             $resultstat['X3'][$quater]['weight']=$QualActweight;
-            $resultstat['X3'][$quater]['rate']=$QualActrate;
+            $resultstat['X3'][$quater]['rate']=$QualActrate.'%';
             $resultstat['X3'][$quater]['kach']=$QualActkach;
             $resultstat['X4'][$quater]['value']=$CRMactivity;
             $resultstat['X4'][$quater]['weight']=$CRMactivityweight;
-            $resultstat['X4'][$quater]['rate']=$CRMactivityrate;
+            $resultstat['X4'][$quater]['rate']=$CRMactivityrate.'%';
             $resultstat['X4'][$quater]['kach']=$CRMactivitykach;
             $resultstat['X5'][$quater]['value']=$CNTNet;
             $resultstat['X5'][$quater]['weight']=$CNTNetweight;
-            $resultstat['X5'][$quater]['rate']=$CNTNetrate;
+            $resultstat['X5'][$quater]['rate']=$CNTNetrate.'%';
             $resultstat['X5'][$quater]['kach']=$CNTNetkach;
             $resultstat['X6'][$quater]['value']=$CNTLev;
             $resultstat['X6'][$quater]['weight']=$CNTLevweight;
-            $resultstat['X6'][$quater]['rate']=$CNTLevrate;
+            $resultstat['X6'][$quater]['rate']=$CNTLevrate.'%';
             $resultstat['X6'][$quater]['kach']=$CNTLevkach;
             $resultstat['X_ALL'][$quater]['kach']=$totalkach;
-            $resultstat['X_ALL'][$quater]['rate']=$KVqrate+$KVavgrate+$QualActrate+$CRMactivityrate+$CNTNetrate+$CNTLevrate;
+            $resultstat['X_ALL'][$quater]['rate']=round($KVqrate+$KVavgrate+$QualActrate+$CRMactivityrate+$CNTNetrate+$CNTLevrate,2).'%';
         }
         return $resultstat;
     }
