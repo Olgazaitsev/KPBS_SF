@@ -177,6 +177,7 @@ Asset::getInstance()->addJs("//cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/s
         for (var key in resultarr) {
             tr = $("<tr></tr>")
             var kpiname
+            var needempty = false
             if(key=='X1') {
                 kpiname = 'КВ - интегральный, рост за период %'
             } else if(key=='X2') {
@@ -191,6 +192,7 @@ Asset::getInstance()->addJs("//cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/s
                 kpiname = 'Средняя сеть контактов по заказчику, диапазон'
             } else if(key=='X_ALL') {
                 kpiname = 'TOTAL POINTS'
+                needempty = true
             } else if(key=='X_BONUS1') {
                 kpiname = 'Плановая маржа на год'
             } else if(key=='X_BONUS2') {
@@ -230,6 +232,12 @@ Asset::getInstance()->addJs("//cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/s
             }
 
             table.append(tr)
+
+            if(needempty) {
+                tr = $("<tr></tr>")
+                tr.append($("<td></td>").text("Бонус:").css('font-weight', 'bold'))
+                table.append(tr)
+            }
         }
         $("#resultfactdate").append(table)
     }
