@@ -199,6 +199,30 @@ $arAllOptions = [
             Loc::getMessage($MODULE_ID.'_ib_uu_id'),
             Option::get($MODULE_ID, 'ib_uu_id'),
             ['text']
+        ],
+        [
+            'q1',
+            Loc::getMessage($MODULE_ID.'_q1'),
+            Option::get($MODULE_ID, 'q1'),
+            ['text']
+        ],
+        [
+            'q2',
+            Loc::getMessage($MODULE_ID.'_q2'),
+            Option::get($MODULE_ID, 'q2'),
+            ['text']
+        ],
+        [
+            'q3',
+            Loc::getMessage($MODULE_ID.'_q3'),
+            Option::get($MODULE_ID, 'q3'),
+            ['text']
+        ],
+        [
+            'q4',
+            Loc::getMessage($MODULE_ID.'_q4'),
+            Option::get($MODULE_ID, 'q4'),
+            ['text']
         ]
     ]
 ];

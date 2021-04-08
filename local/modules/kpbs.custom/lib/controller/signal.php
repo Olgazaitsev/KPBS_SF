@@ -10,7 +10,7 @@ use \Bitrix\Main\Loader;
 
 class Signal extends Controller
 {
-    public function getSignalAction($user, $year, $quarters, $curdate)
+    public function getSignalAction($user, $year, $curdate)
     {
         $resultstat = [];
         $list = \COption::GetOptionString('kpbs.custom', 'ib_id');
@@ -24,11 +24,33 @@ class Signal extends Controller
         $QualActmax = \COption::GetOptionString('kpbs.custom', 'm3_val')/100;
         $CRMactivitytmax = \COption::GetOptionString('kpbs.custom', 'm4_val')/100;
         $CNTLevmax = \COption::GetOptionString('kpbs.custom', 'm6_val');
+        $planf = \COption::GetOptionString('kpbs.custom', 'pl_id');
+        $markf = \COption::GetOptionString('kpbs.custom', 'mk_id');
+        $maxbf = \COption::GetOptionString('kpbs.custom', 'mb_id');
+        $minplf = \COption::GetOptionString('kpbs.custom', 'mp_id');
+        $listb = \COption::GetOptionString('kpbs.custom', 'ib_bon_id');
+        $listuu = \COption::GetOptionString('kpbs.custom', 'ib_uu_id');
+        $quarters = [];
+        $quaterbonus = [
+            '1' => \COption::GetOptionString('kpbs.custom', 'q1')/100,
+            '2' => \COption::GetOptionString('kpbs.custom', 'q2')/100,
+            '3' => \COption::GetOptionString('kpbs.custom', 'q3')/100,
+            '4' => \COption::GetOptionString('kpbs.custom', 'q4')/100
+        ];
 
         // подсчет показателей по текущей дате
         if($curdate) {
             $curyear = date("Y.", $curdate);
             $curkv = intval((date('m', strtotime($curdate)) + 2)/3);
+            if($curkv == 2) {
+                $quarters = [1];
+            } elseif($curkv == 3) {
+                $quarters = [1,2];
+            } elseif($curkv == 4) {
+                $quarters = [1,2,3];
+            }
+
+
             $to = $curdate;
             if($curkv==1) {
                 if($curyear == 2021) {
@@ -45,6 +67,7 @@ class Signal extends Controller
             }
 
             $from2 = $from;
+            $from3 = '01.01.'.$year;
 
             $arSelect = Array("ID", "NAME", "DATE_ACTIVE_FROM", "PROPERTY_DATA_POKAZ", "PROPERTY_MENEDZHER", "PROPERTY_ZNACHENIE_POKAZATELYA");
             $arFilter = Array("IBLOCK_ID"=>$list, "ACTIVE_DATE"=>"Y", "ACTIVE"=>"Y",
@@ -101,6 +124,7 @@ class Signal extends Controller
             $CNTLev = 0;
             $CNTLevkach = 0;
             $CNTLevrate = 0;
+            $totalbonustopay = 0;
 
             do {
                 if($from == $from2) {
@@ -215,6 +239,7 @@ class Signal extends Controller
 
             $totalpoints = round($KVqrate+$KVavgrate+$QualActrate+$CRMactivityrate+$CNTNetrate+$CNTLevrate,2);
 
+            $resultstat['Q'] = $quarters;
             $resultstat['X1']['c']['value']=$KVq;
             $resultstat['X1']['c']['weight']=$KVqweight;
             $resultstat['X1']['c']['rate']=$KVqrate."%";
@@ -245,20 +270,6 @@ class Signal extends Controller
             Loader::includeModule('crm');
             Loader::includeModule('iblock');
 
-            $quaterbonus = [
-                '1' => 0.5,
-                '2' => 0.75,
-                '3' => 0.75,
-                '4' => 1
-            ];
-
-            $planf = \COption::GetOptionString('kpbs.custom', 'pl_id');
-            $markf = \COption::GetOptionString('kpbs.custom', 'mk_id');
-            $maxbf = \COption::GetOptionString('kpbs.custom', 'mb_id');
-            $minplf = \COption::GetOptionString('kpbs.custom', 'mp_id');
-            $listb = \COption::GetOptionString('kpbs.custom', 'ib_bon_id');
-            $listuu = \COption::GetOptionString('kpbs.custom', 'ib_uu_id');
-
             $rsUser = \CUser::GetByID($user);
             $arUser = $rsUser->Fetch();
 
@@ -277,6 +288,8 @@ class Signal extends Controller
             $pattern = '/[^0-9]/';
 
             while ($arResDeals = $deals->fetch()) {
+
+
                 $dealid = $arResDeals['ID'];
                 $arSelect = Array("ID", "PROPERTY_SDELKA", "PROPERTY_MARZHA_FAKTICHESKAYA");
                 $arFilter = Array("IBLOCK_ID"=>$listuu, "ACTIVE_DATE"=>"Y", "ACTIVE"=>"Y",
@@ -290,20 +303,24 @@ class Signal extends Controller
             $arSelect = Array("ID", "PROPERTY_SDELKA", "PROPERTY_SUMMA_VYPLATY");
             $arFilter = Array("IBLOCK_ID"=>$listb, "ACTIVE_DATE"=>"Y", "ACTIVE"=>"Y",
                 "PROPERTY_SOTRUDNIK" => $user,
-                ">="."PROPERTY_DATA_VYPLATY" => date("Y-m-d",strtotime($from2)),
+                ">="."PROPERTY_DATA_VYPLATY" => date("Y-m-d",strtotime($from3)),
                 "<="."PROPERTY_DATA_VYPLATY" => date("Y-m-d",strtotime($to))
             );
-            $res = \CIBlockElement::GetList(Array(), $arFilter, false, false, $arSelect)->fetch();
-            $bonuspaid += $res['PROPERTY_SUMMA_VYPLATY_VALUE'];
+            $res = \CIBlockElement::GetList(Array(), $arFilter, false, false, $arSelect);
+            while ($arResDeals = $res->fetch()) {
+                $bonuspaid += $arResDeals['PROPERTY_SUMMA_VYPLATY_VALUE'];
+            }
+
 
             if($arUser[$planf]>0) {
                 $planperc = $totalmargin/$arUser[$planf]*100;
 
                 if($planperc>=$arUser[$minplf]) {
-                    $bonusbase = $totalmargin*$arUser[$markf]*$quaterbonus[$curkv];
+                    $bonusbase = $totalmargin*$arUser[$markf];
                     $bonustopay = $bonusbase*($totalpoints/100)*($arUser[$maxbf]/100);
                 }
             }
+
             $resultstat['X_BONUS1']['c']['kach'] = 1;
             $resultstat['X_BONUS1']['c']['rate'] = $arUser[$planf].'p.';
             $resultstat['X_BONUS2']['c']['kach'] = 1;
@@ -316,13 +333,7 @@ class Signal extends Controller
             $resultstat['X_BONUS5']['c']['rate'] = $bonuspaid.'p.';
             $resultstat['X_BONUS6']['c']['kach'] = 1;
             $resultstat['X_BONUS6']['c']['rate'] = $bonustopay.'p.';
-            if($bonustopay>$bonuspaid) {
-                $resultstat['X_BONUS7']['c']['kach'] = 1;
-                $resultstat['X_BONUS7']['c']['rate'] = $bonustopay-$bonuspaid;
-            } else {
-                $resultstat['X_BONUS7']['c']['kach'] = 1;
-                $resultstat['X_BONUS7']['c']['rate'] = 0;
-            }
+            $totalbonustopay = $bonustopay;
         }
 
         // подсчет показателей по кварталами
@@ -540,7 +551,56 @@ class Signal extends Controller
             $resultstat['X6'][$quater]['kach']=$CNTLevkach;
             $resultstat['X_ALL'][$quater]['kach']=$totalkach;
             $resultstat['X_ALL'][$quater]['rate']=round($KVqrate+$KVavgrate+$QualActrate+$CRMactivityrate+$CNTNetrate+$CNTLevrate,2).'%';
+            \Bitrix\Main\Diag\Debug::writeToFile($from2, "from2", "__miros.log");
+            \Bitrix\Main\Diag\Debug::writeToFile($to, "to", "__miros.log");
+            $deals = DealTable::getList([
+                'filter' => [
+                    'ASSIGNED_BY_ID'=> $user, 'CLOSED'=>'Y', '>=CLOSEDATE'=>$from2, '<=CLOSEDATE'=>$to, 'STAGE_ID'=>'WON'
+                ],
+                'select' => [
+                    'ID'
+                ]
+            ]);
+
+            $totalmargin = 0;
+            $bonustopay = 0;
+
+            $pattern = '/[^0-9]/';
+
+            while ($arResDeals = $deals->fetch()) {
+                \Bitrix\Main\Diag\Debug::writeToFile($dealid, "deal", "__miros.log");
+                $dealid = $arResDeals['ID'];
+                $arSelect = Array("ID", "PROPERTY_SDELKA", "PROPERTY_MARZHA_FAKTICHESKAYA");
+                $arFilter = Array("IBLOCK_ID"=>$listuu, "ACTIVE_DATE"=>"Y", "ACTIVE"=>"Y",
+                    "PROPERTY_SDELKA" => $dealid
+                );
+                $res = \CIBlockElement::GetList(Array(), $arFilter, false, false, $arSelect)->fetch();
+                $totalmargin += preg_replace($pattern, "", $res['PROPERTY_MARZHA_FAKTICHESKAYA_VALUE']);
+
+            }
+
+            if($arUser[$planf]>0) {
+                $planperc = $totalmargin/$arUser[$planf]*100;
+
+                if($planperc>=$arUser[$minplf]) {
+                    $bonusbase = $totalmargin*$arUser[$markf];
+                    $bonustopay = $bonusbase*($totalpoints/100)*($arUser[$maxbf]/100);
+                }
+            }
+            $totalbonustopay += $bonustopay;
         }
+
+        $totalbonustopay = $totalbonustopay*$quaterbonus[$curkv];
+
+        if($totalbonustopay>$bonuspaid) {
+            $resultstat['X_BONUS7']['c']['kach'] = 1;
+            $resultstat['X_BONUS7']['c']['rate'] = ($totalbonustopay-$bonuspaid)."p.";
+        } else {
+            $resultstat['X_BONUS7']['c']['kach'] = 1;
+            $resultstat['X_BONUS7']['c']['rate'] = 0;
+        }
+
+
         return $resultstat;
     }
 }

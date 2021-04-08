@@ -33,8 +33,8 @@ Asset::getInstance()->addJs("//cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/s
         <p class="label_title">Год</p>
         <div id="years" class="container">
         </div>
-        <p class="label_title">Квартал</p>
-        <div id="quarters">
+        <!--<p class="label_title">Квартал</p>
+        <div id="quarters"> -->
         </div>
         <p class="label_title">Сотрудник</p>
         <div id="employees">
@@ -74,14 +74,13 @@ Asset::getInstance()->addJs("//cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/s
         $("#years").html(select);
         $("#year :first").attr("selected", "selected");
 
-        var json2 = [
+        /*var json2 = [
             {value: "1", text: "1 квартал"},
             {value: "2", text: "2 квартал"},
             {value: "3", text: "3 квартал"},
             {value: "4", text: "4 квартал"}
         ];
-        //console.log(json)
-        //console.log(typeof json)
+
 
         var select = $("<select class=\"js-select2\"></select>").attr("id", "quarter").attr("name", "quarter").attr("multiple", "multiple");
         $.each(json2,function(index,json){
@@ -94,7 +93,7 @@ Asset::getInstance()->addJs("//cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/s
             placeholder: "Кварталы",
             allowHtml: true,
             allowClear: true
-        });
+        });*/
 
         var users =  <?= \CUtil::phpToJSObject($arResult['USERS']);?>;
 
@@ -126,34 +125,39 @@ Asset::getInstance()->addJs("//cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/s
             $("#resultfactdate").empty()
             var setusersf = $("#userf").val()
             var year = $("#year").val()
-            var quarter = $("#quarter").val()
+            //var curdate = $("#cur_date").val()
             var curdate = $("#cur_date").val()
-            setusersf.forEach(function (setuserf) {
-                if(setuserf!='all') {
-                    BX.ajax.runAction('kpbs:custom.api.signal.getSignal', {
-                        data: {
-                            user: setuserf,
-                            year: year,
-                            quarters: quarter,
-                            curdate: curdate
-                        }
-                    }).then(function (response) {
-                        console.log(response);
-                        var resultarr = response.data
-                        drawfact(resultarr, users, setuserf, quarter, curdate)
+            //var quarter = $("#quarter").val()
+            if(!curdate) {
+                alert('Нужно указать текущую дату')
+            } else {
+                setusersf.forEach(function (setuserf) {
+                    if(setuserf!='all') {
+                        BX.ajax.runAction('kpbs:custom.api.signal.getSignal', {
+                            data: {
+                                user: setuserf,
+                                year: year,
+                                //quarters: quarter,
+                                curdate: curdate
+                            }
+                        }).then(function (response) {
+                            console.log(response);
+                            var resultarr = response.data
+                            drawfact(resultarr, users, setuserf, curdate)
 
-                    }, function (error) {
-                        //сюда будут приходить все ответы, у которых status !== 'success'
-                        console.log(error);
+                        }, function (error) {
+                            //сюда будут приходить все ответы, у которых status !== 'success'
+                            console.log(error);
 
-                    });
-                }
-            })
+                        });
+                    }
+                })
+            }
         });
     })
 
-    function drawfact(resultarr, users, setuserf, quarters, curdate) {
-        //console.log(resultarr)
+    function drawfact(resultarr, users, setuserf, curdate) {
+        console.log(resultarr)
         //console.log(users)
         //console.log(setuserf)
         var managername
@@ -168,75 +172,79 @@ Asset::getInstance()->addJs("//cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/s
         var tr = $("<tr></tr>")
         tr.append($("<th></th>").text("Показатель").width(200))
         if(curdate) {
-            tr.append($("<th></th>").text("Текущее").width(100))
+            tr.append($("<th></th>").text("Текущий квартал").width(100))
         }
+        var quarters = resultarr['Q']
         $.each(quarters,function(index,quarter) {
             tr.append($("<th></th>").text(quarter + "квартал").width(100))
         })
         table.append(tr)
-        for (var key in resultarr) {
-            tr = $("<tr></tr>")
-            var kpiname
-            var needempty = false
-            if(key=='X1') {
-                kpiname = 'КВ - интегральный, рост за период %'
-            } else if(key=='X2') {
-                kpiname = 'КВ - средний по продавцу, диапазон'
-            } else if(key=='X3') {
-                kpiname = 'Качество работы с системой - актуальность'
-            } else if(key=='X4') {
-                kpiname = 'Качество работы с системой - вовлеченность'
-            } else if(key=='X5') {
-                kpiname = 'Средний уровень контакта, диапазон'
-            } else if(key=='X6') {
-                kpiname = 'Средняя сеть контактов по заказчику, диапазон'
-            } else if(key=='X_ALL') {
-                kpiname = 'TOTAL POINTS'
-                needempty = true
-            } else if(key=='X_BONUS1') {
-                kpiname = 'Плановая маржа на год'
-            } else if(key=='X_BONUS2') {
-                kpiname = 'Текущая маржа'
-            } else if(key=='X_BONUS3') {
-                kpiname = 'БАЗА для формирования бонуса'
-            } else if(key=='X_BONUS4') {
-                kpiname = 'Бонусные БАЛЛЫ'
-            } else if(key=='X_BONUS5') {
-                kpiname = 'Выплаченный бонус'
-            } else if(key=='X_BONUS6') {
-                kpiname = 'Начисленный бонус'
-            } else if(key=='X_BONUS7') {
-                kpiname = 'К выплате в конце квартала'
-            }
 
-            tr.append($("<td></td>").text(kpiname))
-            if(curdate) {
-                var color = 'SpringGreen'
-                if(resultarr[key]['c']['kach']==0) {
-                    color = 'red'
-                } else if(resultarr[key]['c']['kach']==0.5) {
-                    color = 'yellow'
+        for (var key in resultarr) {
+            if(key!='Q') {
+                tr = $("<tr></tr>")
+                var kpiname
+                var needempty = false
+                if(key=='X1') {
+                    kpiname = 'КВ - интегральный, рост за период %'
+                } else if(key=='X2') {
+                    kpiname = 'КВ - средний по продавцу, диапазон'
+                } else if(key=='X3') {
+                    kpiname = 'Качество работы с системой - актуальность'
+                } else if(key=='X4') {
+                    kpiname = 'Качество работы с системой - вовлеченность'
+                } else if(key=='X5') {
+                    kpiname = 'Средний уровень контакта, диапазон'
+                } else if(key=='X6') {
+                    kpiname = 'Средняя сеть контактов по заказчику, диапазон'
+                } else if(key=='X_ALL') {
+                    kpiname = 'TOTAL POINTS'
+                    needempty = true
+                } else if(key=='X_BONUS1') {
+                    kpiname = 'Плановая маржа на год'
+                } else if(key=='X_BONUS2') {
+                    kpiname = 'Текущая маржа'
+                } else if(key=='X_BONUS3') {
+                    kpiname = 'БАЗА для формирования бонуса'
+                } else if(key=='X_BONUS4') {
+                    kpiname = 'Бонусные БАЛЛЫ'
+                } else if(key=='X_BONUS5') {
+                    kpiname = 'Сумма выплат в этом году'
+                } else if(key=='X_BONUS6') {
+                    kpiname = 'Начисление за текущий квартал'
+                } else if(key=='X_BONUS7') {
+                    kpiname = 'К выплате в конце квартала (с учетом кв. к-та)'
                 }
-                tr.append($("<td></td>").text(resultarr[key]['c']['rate']).width(100).attr('bgcolor', color))
-            }
-            if(key=='X1' || key=='X2' || key=='X3' || key=='X4' || key=='X5' || key=='X6' || key=='X_ALL') {
-                $.each(quarters,function(index,quarter) {
+
+                tr.append($("<td></td>").text(kpiname))
+                if(curdate) {
                     var color = 'SpringGreen'
-                    if(resultarr[key][quarter]['kach']==0) {
+                    if(resultarr[key]['c']['kach']==0) {
                         color = 'red'
-                    } else if(resultarr[key][quarter]['kach']==0.5) {
+                    } else if(resultarr[key]['c']['kach']==0.5) {
                         color = 'yellow'
                     }
-                    tr.append($("<td></td>").text(resultarr[key][quarter]['rate']).width(100).attr('bgcolor', color))
-                })
-            }
+                    tr.append($("<td></td>").text(resultarr[key]['c']['rate']).width(100).attr('bgcolor', color))
+                }
+                if(key=='X1' || key=='X2' || key=='X3' || key=='X4' || key=='X5' || key=='X6' || key=='X_ALL') {
+                    $.each(quarters,function(index,quarter) {
+                        var color = 'SpringGreen'
+                        if(resultarr[key][quarter]['kach']==0) {
+                            color = 'red'
+                        } else if(resultarr[key][quarter]['kach']==0.5) {
+                            color = 'yellow'
+                        }
+                        tr.append($("<td></td>").text(resultarr[key][quarter]['rate']).width(100).attr('bgcolor', color))
+                    })
+                }
 
-            table.append(tr)
-
-            if(needempty) {
-                tr = $("<tr></tr>")
-                tr.append($("<td></td>").text("Бонус:").css('font-weight', 'bold'))
                 table.append(tr)
+
+                if(needempty) {
+                    tr = $("<tr></tr>")
+                    tr.append($("<td></td>").text("Бонус:").css('font-weight', 'bold'))
+                    table.append(tr)
+                }
             }
         }
         $("#resultfactdate").append(table)
