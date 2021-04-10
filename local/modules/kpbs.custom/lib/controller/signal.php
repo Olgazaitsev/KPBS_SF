@@ -37,10 +37,11 @@ class Signal extends Controller
             '3' => \COption::GetOptionString('kpbs.custom', 'q3')/100,
             '4' => \COption::GetOptionString('kpbs.custom', 'q4')/100
         ];
+        $userslist = explode(',', \COption::GetOptionString('kpbs.custom', 'users_list'));
 
         // подсчет показателей по текущей дате
         if($curdate) {
-            $curyear = date("Y.", $curdate);
+
             $curkv = intval((date('m', strtotime($curdate)) + 2)/3);
             if($curkv == 2) {
                 $quarters = [1];
@@ -53,7 +54,7 @@ class Signal extends Controller
 
             $to = $curdate;
             if($curkv==1) {
-                if($curyear == 2021) {
+                if($year == 2021) {
                     $from = '15.03.'.$year;
                 } else {
                     $from = '01.01.'.$year;
@@ -82,6 +83,7 @@ class Signal extends Controller
 
             $arSelect2 = Array("ID", "NAME", "DATE_ACTIVE_FROM", "PROPERTY_DATA_POKAZ", "PROPERTY_MENEDZHER", "PROPERTY_ZNACHENIE_POKAZATELYA");
             $arFilter2 = Array("IBLOCK_ID"=>$list, "ACTIVE_DATE"=>"Y", "ACTIVE"=>"Y",
+                "PROPERTY_MENEDZHER" => $userslist,
                 "NAME" => 'CRMactivity',
                 ">="."PROPERTY_DATA_POKAZ" => date("Y-m-d",strtotime($from)),
                 "<="."PROPERTY_DATA_POKAZ" => date("Y-m-d",strtotime($to)),
@@ -316,8 +318,8 @@ class Signal extends Controller
                 $planperc = $totalmargin/$arUser[$planf]*100;
 
                 if($planperc>=$arUser[$minplf]) {
-                    $bonusbase = $totalmargin*$arUser[$markf];
-                    $bonustopay = $bonusbase*($totalpoints/100)*($arUser[$maxbf]/100);
+                    $bonusbase = round($totalmargin*$arUser[$markf],0);
+                    $bonustopay = round($bonusbase*($totalpoints/100)*($arUser[$maxbf]/100),0);
                 }
             }
 
@@ -371,6 +373,7 @@ class Signal extends Controller
 
             $arSelect2 = Array("ID", "NAME", "DATE_ACTIVE_FROM", "PROPERTY_DATA_POKAZ", "PROPERTY_MENEDZHER", "PROPERTY_ZNACHENIE_POKAZATELYA");
             $arFilter2 = Array("IBLOCK_ID"=>$list, "ACTIVE_DATE"=>"Y", "ACTIVE"=>"Y",
+                "PROPERTY_MENEDZHER" => $userslist,
                 "NAME" => 'CRMactivity',
                 ">="."PROPERTY_DATA_POKAZ" => date("Y-m-d",strtotime($from)),
                 "<="."PROPERTY_DATA_POKAZ" => date("Y-m-d",strtotime($to)),
@@ -551,8 +554,9 @@ class Signal extends Controller
             $resultstat['X6'][$quater]['kach']=$CNTLevkach;
             $resultstat['X_ALL'][$quater]['kach']=$totalkach;
             $resultstat['X_ALL'][$quater]['rate']=round($KVqrate+$KVavgrate+$QualActrate+$CRMactivityrate+$CNTNetrate+$CNTLevrate,2).'%';
-            \Bitrix\Main\Diag\Debug::writeToFile($from2, "from2", "__miros.log");
-            \Bitrix\Main\Diag\Debug::writeToFile($to, "to", "__miros.log");
+
+            $totalpoints = round($KVqrate+$KVavgrate+$QualActrate+$CRMactivityrate+$CNTNetrate+$CNTLevrate,2);
+
             $deals = DealTable::getList([
                 'filter' => [
                     'ASSIGNED_BY_ID'=> $user, 'CLOSED'=>'Y', '>=CLOSEDATE'=>$from2, '<=CLOSEDATE'=>$to, 'STAGE_ID'=>'WON'
@@ -568,7 +572,6 @@ class Signal extends Controller
             $pattern = '/[^0-9]/';
 
             while ($arResDeals = $deals->fetch()) {
-                \Bitrix\Main\Diag\Debug::writeToFile($dealid, "deal", "__miros.log");
                 $dealid = $arResDeals['ID'];
                 $arSelect = Array("ID", "PROPERTY_SDELKA", "PROPERTY_MARZHA_FAKTICHESKAYA");
                 $arFilter = Array("IBLOCK_ID"=>$listuu, "ACTIVE_DATE"=>"Y", "ACTIVE"=>"Y",
@@ -594,7 +597,7 @@ class Signal extends Controller
 
         if($totalbonustopay>$bonuspaid) {
             $resultstat['X_BONUS7']['c']['kach'] = 1;
-            $resultstat['X_BONUS7']['c']['rate'] = ($totalbonustopay-$bonuspaid)."p.";
+            $resultstat['X_BONUS7']['c']['rate'] = round(($totalbonustopay-$bonuspaid),0)."p.";
         } else {
             $resultstat['X_BONUS7']['c']['kach'] = 1;
             $resultstat['X_BONUS7']['c']['rate'] = 0;

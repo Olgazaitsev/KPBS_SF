@@ -34,4 +34,5 @@ $MESS[$MODULE_ID.'_q1'] = 'Первый квартал';
 $MESS[$MODULE_ID.'_q2'] = 'Второй квартал';
 $MESS[$MODULE_ID.'_q3'] = 'Третий квартал';
 $MESS[$MODULE_ID.'_q4'] = 'Четвертый квартал';
+$MESS[$MODULE_ID.'_users_list'] = 'Менеджеры';
 $MESS[$MODULE_ID.'_webinars_iblock_id'] = 'Списки';

@@ -11,10 +11,15 @@ class KpbsKpicalculationComponent extends CBitrixComponent
 
     public function executeComponent()
     {
+
+        $userslist = explode(',', COption::GetOptionString('kpbs.custom', 'users_list'));
+
+        \Bitrix\Main\Diag\Debug::writeToFile($userslist, "ulist", "__miros.log");
+
         $filter = Array
         (
             "ACTIVE" => "Y",
-            "!ID" => 61
+            //"ID" => $userslist
             //"GROUPS_ID"           => Array(1)
         );
 
@@ -24,7 +29,9 @@ class KpbsKpicalculationComponent extends CBitrixComponent
         $users = array();
 
         while ($arResUser = $rsUser->Fetch()) {
-            array_push($users, $arResUser);
+            if(in_array($arResUser['ID'], $userslist)) {
+                array_push($users, $arResUser);
+            }
         }
 
         $this->arResult = array(

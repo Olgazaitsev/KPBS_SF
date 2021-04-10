@@ -240,7 +240,6 @@ $rsUserFields = \Bitrix\Main\UserFieldTable::getList(array(
 
 
 while($arUserField=$rsUserFields->fetch())
-
 {
     if($arUserField['USER_TYPE_ID']=='double' || $arUserField['USER_TYPE_ID']=='text') {
         //array_push($ufarr, $arUserField['FIELD_NAME']);
@@ -276,7 +275,27 @@ while ($arResGroup = $res->Fetch()) {
     array_push($arAllOptions['main'], $grouparr);
 }
 
+$userarr = [];
 
+
+$rsUser = \CUser::GetList(($by="ID"), ($order="desc"), хъ);
+// заносим прочие показатели
+$users = array();
+
+while ($arResUser = $rsUser->Fetch()) {
+    $userarr[$arResUser['ID']] = $arResUser['NAME'].' '.$arResUser['LAST_NAME'];
+}
+
+$userset = [
+    'users_list',
+    Loc::getMessage($MODULE_ID.'_users_list'),
+    Option::get($MODULE_ID, 'users_list'),
+    [
+        'multiselectbox',
+        $userarr
+    ]
+];
+array_push($arAllOptions['kpi'], $userset);
 
 if(isset($request["save"]) && check_bitrix_sessid()) {
     foreach ($arAllOptions as $part) {
