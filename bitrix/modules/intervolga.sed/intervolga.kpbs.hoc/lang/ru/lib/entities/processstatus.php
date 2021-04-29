@@ -1,6 +1,0 @@
-<?
-$MESS['PROCESSSTATUS.ST_N_NEW'] = 'Новый';
-$MESS['PROCESSSTATUS.ST_N_PROGRESS'] = 'В работе';
-$MESS['PROCESSSTATUS.ST_N_PAUSED'] = 'Приостановлен';
-$MESS['PROCESSSTATUS.ST_N_APPROVED'] = 'Согласовано';
-$MESS['PROCESSSTATUS.ST_N_NOT_APPROVED'] = 'Не согласовано';

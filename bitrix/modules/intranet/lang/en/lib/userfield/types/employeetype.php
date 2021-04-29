@@ -1,4 +1,0 @@
-<?
-$MESS["INTRANET_FIELD_EMPLOYEE_CHANGE"] = "Change";
-$MESS["INTRANET_PROPERTY_TITLE"] = "Bind to user";
-?>

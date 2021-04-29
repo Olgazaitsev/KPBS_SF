@@ -1,3 +1,0 @@
-<?
-$MESS["IMCONNECTOR_GUEST_USER"] = "Guest";
-?>

@@ -1,1 +1,0 @@
-<?require($_SERVER["DOCUMENT_ROOT"]."/bitrix/modules/intervolga.sed/admin/task_trigger_list.php");?>

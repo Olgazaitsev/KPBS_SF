@@ -3,7 +3,6 @@ ai
 apconnect
 auth
 bizproc
-/bitrix
 calendar
 company
 configs
@@ -61,3 +60,4 @@ storage.php
 urlrewrite.php
 ustat.php
 web.config
+

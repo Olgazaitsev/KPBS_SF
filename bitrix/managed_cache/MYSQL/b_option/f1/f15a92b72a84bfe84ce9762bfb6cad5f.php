@@ -1,7 +1,0 @@
-<?
-if($INCLUDE_FROM_CACHE!='Y')return false;
-$datecreate = '001608808562';
-$dateexpire = '001608812162';
-$ser_content = 'a:2:{s:7:"CONTENT";s:0:"";s:4:"VARS";a:1:{s:1:"-";a:29:{s:15:"~export_uniq_id";s:32:"248a8fbf50f2308fbd97c60712161886";s:20:"~ft_b_calendar_event";s:1:"1";s:22:"denied_superpose_types";s:6:"a:0:{}";s:15:"dep_manager_sub";s:1:"1";s:10:"eventindex";s:87:"a:4:{s:5:"count";i:153;s:5:"steps";i:34;s:15:"sectionFinished";b:1;s:8:"finished";b:0;}";s:8:"forum_id";s:1:"8";s:15:"needChangeColor";s:1:"N";s:13:"path_to_group";s:29:"/workgroups/group/#group_id#/";s:22:"path_to_group_calendar";s:38:"/workgroups/group/#group_id#/calendar/";s:10:"path_to_rm";s:0:"";s:29:"path_to_type_company_calendar";s:0:"";s:19:"path_to_type_events";s:0:"";s:12:"path_to_user";s:33:"/company/personal/user/#user_id#/";s:21:"path_to_user_calendar";s:42:"/company/personal/user/#user_id#/calendar/";s:10:"path_to_vr";s:0:"";s:16:"pathes_for_sites";s:0:"";s:12:"pathes_sites";s:6:"a:0:{}";s:12:"rm_for_sites";s:1:"1";s:12:"rm_iblock_id";s:2:"14";s:14:"rm_iblock_type";s:6:"events";s:12:"sync_by_push";s:0:"";s:18:"user_name_template";s:0:"";s:15:"user_show_login";s:1:"1";s:13:"week_holidays";s:5:"SA|SU";s:10:"week_start";s:2:"MO";s:13:"work_time_end";s:2:"19";s:15:"work_time_start";s:1:"9";s:13:"year_holidays";s:78:"1.01,2.01,7.01,23.02,8.03,1.05,2.05,3.05,4.05,5.05,9.05,10.05,11.05,12.06,4.11";s:13:"year_workdays";s:5:"31.12";}}}';
-return true;
-?>

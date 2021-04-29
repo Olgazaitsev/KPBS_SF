@@ -1,7 +1,0 @@
-<?php
-$MESS['CTS.ADMIN_TSTATUS_LIST.ADD_BTN_LABEL'] = 'Добавить статус задач';
-$MESS['CTS.ADMIN_TSTATUS_LIST.NAME_FIELD_LABEL'] = 'Название статуса задач';
-$MESS['CTS.ADMIN_TSTATUS_LIST.CODE_FIELD_LABEL'] = 'Символьный код';
-$MESS['CTS.ADMIN_TSTATUS_LIST.REAL_STATUS_FIELD_LABEL'] = 'Реальный статус';
-$MESS['CTS.ADMIN_TSTATUS_LIST.SORT_FIELD_LABEL'] = 'Сортировка';
-$MESS['CTS.ADMIN_TSTATUS_LIST.ERR_ID_NOT_FOUND'] = 'Тип задач с таким ID не найден';

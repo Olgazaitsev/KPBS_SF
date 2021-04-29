@@ -1,2 +1,0 @@
-<?
-$MESS['C.TASKSTATUSFIELD.FIELD_LABEL'] = 'User status';

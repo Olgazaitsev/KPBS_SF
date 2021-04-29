@@ -1,5 +1,0 @@
-<?
-$MESS["SC_COMPANY_CONTACTS_COMPANY_NAME"] = "Company name";
-$MESS["SC_COMPANY_CONTACTS_COMPANY_PHONE"] = "Company phone";
-$MESS["SC_COMPANY_CONTACTS_TITLE"] = "Company contacts";
-?>

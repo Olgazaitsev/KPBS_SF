@@ -1,7 +1,0 @@
-<?php
-$MESS['SED.ADMIN_STATUS_LIST.ADD_BTN_LABEL'] = 'Add status';
-
-$MESS['SED.ADMIN_STATUS_LIST.NAME_FIELD_LABEL'] = 'Status name';
-$MESS['SED.ADMIN_STATUS_LIST.CODE_FIELD_LABEL'] = 'Symbolic code';
-
-$MESS['SED.ADMIN_STATUS_LIST.NO_PROCESS_ID'] = 'No route ID specified';

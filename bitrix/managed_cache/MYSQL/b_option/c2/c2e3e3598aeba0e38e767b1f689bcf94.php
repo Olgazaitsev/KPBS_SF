@@ -1,7 +1,0 @@
-<?
-if($INCLUDE_FROM_CACHE!='Y')return false;
-$datecreate = '001608810181';
-$dateexpire = '001608813781';
-$ser_content = 'a:2:{s:7:"CONTENT";s:0:"";s:4:"VARS";a:2:{s:1:"-";a:16:{s:20:"create_overdue_chats";s:1:"N";s:20:"effective_date_start";s:19:"2020-01-21 16:27:32";s:18:"have_uf_tasks_task";s:1:"1";s:27:"have_uf_tasks_task_template";s:1:"1";s:18:"needCounterRecount";s:1:"N";s:21:"needEfficiencyRecount";s:1:"N";s:27:"needTaskCheckListConversion";s:1:"N";s:31:"needTemplateCheckListConversion";s:1:"N";s:14:"sanitize_level";s:1:"3";s:23:"task_comment_allow_edit";s:1:"Y";s:25:"task_comment_allow_remove";s:1:"Y";s:22:"task_extranet_forum_id";s:1:"0";s:13:"task_forum_id";s:1:"8";s:24:"tasksDropCommentCounters";s:19:"2020-07-24 18:07:15";s:14:"tasksNeedIndex";s:1:"N";s:24:"template.files.converted";s:1:"1";}s:2:"s1";a:8:{s:16:"paths_task_group";s:35:"/workgroups/group/#group_id#/tasks/";s:23:"paths_task_group_action";s:59:"/workgroups/group/#group_id#/tasks/task/#action#/#task_id#/";s:21:"paths_task_group_edit";s:55:"/workgroups/group/#group_id#/tasks/task/edit/#task_id#/";s:22:"paths_task_group_entry";s:55:"/workgroups/group/#group_id#/tasks/task/view/#task_id#/";s:15:"paths_task_user";s:39:"/company/personal/user/#user_id#/tasks/";s:22:"paths_task_user_action";s:63:"/company/personal/user/#user_id#/tasks/task/#action#/#task_id#/";s:20:"paths_task_user_edit";s:59:"/company/personal/user/#user_id#/tasks/task/edit/#task_id#/";s:21:"paths_task_user_entry";s:59:"/company/personal/user/#user_id#/tasks/task/view/#task_id#/";}}}';
-return true;
-?>
