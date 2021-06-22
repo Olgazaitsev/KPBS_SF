@@ -127,27 +127,35 @@ class MyEventsHandler
                 //\Bitrix\Main\Diag\Debug::writeToFile($obResDeal['UF_CRM_1614278967'], "dept2", "__miros.log");
                 //\Bitrix\Main\Diag\Debug::writeToFile($arFields['UF_CRM_1614278967'], "dept2", "__miros.log");
                 // тут меняем код ПП и его значения = нет в соответствие с продом
-                if(!$obResDeal['UF_CRM_1614278967']) {
-                    if(!$arFields['UF_CRM_1614278967']) {
-                        //\Bitrix\Main\Diag\Debug::writeToFile('third cond', "dept2", "__miros.log");
-                        CModule::IncludeModule('im');
-                        $arFieldschat = array(
-                            "MESSAGE_TYPE" => "S", # P - private chat, G - group chat, S - notification
-                            "TO_USER_ID" => $arFields['MODIFY_BY_ID'],
-                            "FROM_USER_ID" => 1,
-                            "MESSAGE" => "СДЕЛКА НЕ СОХРАНЕНА! Сначала заполните поле Проверка архитектора",
-                            "AUTHOR_ID" => 1
-                            //"EMAIL_TEMPLATE" => "some",
-                            //"NOTIFY_TYPE" => 2,  # 1 - confirm, 2 - notify single from, 4 - notify single
-                            //"NOTIFY_MODULE" => "main", # module id sender (ex: xmpp, main, etc)
-                            //"NOTIFY_EVENT" => "IM_GROUP_INVITE", # module event id for search (ex, IM_GROUP_INVITE)
-                            //"NOTIFY_TITLE" => "title to send email", # notify title to send email
-                        );
-                        CIMMessenger::Add($arFieldschat);
-                        $arFields['RESULT_MESSAGE'] = "Поле проверка архитектора должно быть заполнено";
-                        $APPLICATION->ThrowException($arFields['RESULT_MESSAGE']);
-                        return false;
+                $errormsg = '';
+                if (!$arFields['UF_CRM_1614278967']) {
+                    if(!$obResDeal['UF_CRM_1614278967']) {
+                        $errormsg = "Поле проверка архитектора должно быть заполнено.";
                     }
+                }
+                if (!$arFields['UF_CRM_1611675525741']) {
+                    if(!$obResDeal['UF_CRM_1611675525741']) {
+                        $errormsg .= "Поле ПНР должно быть заполнено";
+                    }
+                }
+                if($errormsg) {
+                    $arFields['RESULT_MESSAGE'] = $errormsg;
+                    CModule::IncludeModule('im');
+                    $arFieldschat = array(
+                        "MESSAGE_TYPE" => "S", # P - private chat, G - group chat, S - notification
+                        "TO_USER_ID" => $arFields['MODIFY_BY_ID'],
+                        "FROM_USER_ID" => 1,
+                        "MESSAGE" => $arFields['RESULT_MESSAGE'],
+                        "AUTHOR_ID" => 1
+                        //"EMAIL_TEMPLATE" => "some",
+                        //"NOTIFY_TYPE" => 2,  # 1 - confirm, 2 - notify single from, 4 - notify single
+                        //"NOTIFY_MODULE" => "main", # module id sender (ex: xmpp, main, etc)
+                        //"NOTIFY_EVENT" => "IM_GROUP_INVITE", # module event id for search (ex, IM_GROUP_INVITE)
+                        //"NOTIFY_TITLE" => "title to send email", # notify title to send email
+                    );
+                    CIMMessenger::Add($arFieldschat);
+                    $APPLICATION->ThrowException($arFields['RESULT_MESSAGE']);
+                    return false;
                 }
             }
         }
