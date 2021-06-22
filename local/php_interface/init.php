@@ -6,6 +6,7 @@ require_once($_SERVER['DOCUMENT_ROOT'].'/local/vendor/autoload.php');
 //\Bitrix\Main\Diag\Debug::writeToFile("init", "init", "__miros.log");
 AddEventHandler('tasks', 'OnBeforeTaskAdd', Array("MyEventsHandler", "my_OnBeforeTaskAdd"));
 AddEventHandler('tasks', 'OnTaskAdd', Array("MyEventsHandler", "my_OnTaskAdd"));
+AddEventHandler('tasks', 'OnTaskUpdate', Array("MyEventsHandler", "my_OnTaskUpdate"));
 AddEventHandler('crm', 'OnBeforeCrmDealUpdate', Array("MyEventsHandler", "my_OnBeforeCrmDealUpdate"));
 AddEventHandler('crm', 'OnBeforeCrmCompanyAdd', Array("MyEventsHandler", "my_OnBeforeCrmCompanyUpdate"));
 AddEventHandler('crm', 'OnBeforeCrmCompanyUpdate', Array("MyEventsHandler", "my_OnBeforeCrmCompanyUpdate"));
@@ -65,6 +66,12 @@ class MyEventsHandler
         Utility::sendNewTaskNotification($taskId);
     }
 
+    function my_OnTaskUpdate($taskId){
+        //Bitrix\Main\Diag\Debug::writeToFile("tasksadd", "upevent", "__miros.log");
+        Utility::sendUpdateTaskNotification($taskId);
+    }
+
+
     function my_OnBeforeCrmDealUpdate(&$arFields){
         global $APPLICATION;
         //Bitrix\Main\Diag\Debug::writeToFile("updateevent", "upevent", "__miros.log");
@@ -73,7 +80,7 @@ class MyEventsHandler
         $dealId = $arFields["ID"];
         $modifiedById = $arFields["MODIFY_BY_ID"];
 
-        $stagesarchitect = array('FINAL_INVOICE', '1', '2', '4', '3', 'WON', 'LOSE', 'APOLOGY');
+        $stagesarchitect = array('FINAL_INVOICE', '1', '2', '4', '3', 'WON');
 
         // Проверка наличия компании в сделке
         $companyId = $arFields["COMPANY_ID"];
@@ -88,11 +95,11 @@ class MyEventsHandler
         CModule::IncludeModule('crm');
         $arFilterDeal = array('ID'=>$dealId);
         // тут меняем код 'UF_CRM_1614162501453' на код проверки архитектора на бое
-        $arSelectDeal = array('ID', 'STAGE_ID', 'UF_CRM_1611675525741', 'UF_CRM_1611675557650', 'UF_CRM_1599830407833', 'UF_CRM_1614162501453');
+        $arSelectDeal = array('ID', 'STAGE_ID', 'UF_CRM_1611675525741', 'UF_CRM_1611675557650', 'UF_CRM_1599830407833', 'UF_CRM_1614278967');
 
         $obResDeal = CCrmDeal::GetListEx(false,$arFilterDeal,false,false,$arSelectDeal)->Fetch();
         // проверка архитектора
-        if ($arFields['UF_CRM_1614162501453']=='2042' && !$arFields['UF_CRM_1614793006']) {
+        if ($arFields['UF_CRM_1614278967']=='2089' && !$arFields['UF_CRM_1614862006']) {
             CModule::IncludeModule('im');
             $arFieldschat = array(
                 "MESSAGE_TYPE" => "S", # P - private chat, G - group chat, S - notification
@@ -112,17 +119,16 @@ class MyEventsHandler
             return false;
         }
 
-        if(in_array(523, $arFields['UF_CRM_1599830407833']) || in_array(523, $obResDeal['UF_CRM_1599830407833'])) {
+        if(in_array(523, $arFields['UF_CRM_1599830407833']) || in_array(523, $obResDeal['UF_CRM_1599830407833']) ||
+            in_array(525, $arFields['UF_CRM_1599830407833']) || in_array(525, $obResDeal['UF_CRM_1599830407833'])) {
             //\Bitrix\Main\Diag\Debug::writeToFile('firstcond', "dept2", "__miros.log");
             if(in_array($arFields['STAGE_ID'], $stagesarchitect) || in_array($obResDeal['STAGE_ID'], $stagesarchitect)) {
                 //\Bitrix\Main\Diag\Debug::writeToFile('secondcond', "dept2", "__miros.log");
-                \Bitrix\Main\Diag\Debug::writeToFile($obResDeal['UF_CRM_1614162501453'], "afields1", "__miros.log");
-                \Bitrix\Main\Diag\Debug::writeToFile($arFields, "afields2", "__miros.log");
+                //\Bitrix\Main\Diag\Debug::writeToFile($obResDeal['UF_CRM_1614278967'], "dept2", "__miros.log");
+                //\Bitrix\Main\Diag\Debug::writeToFile($arFields['UF_CRM_1614278967'], "dept2", "__miros.log");
                 // тут меняем код ПП и его значения = нет в соответствие с продом
-
-
-                if(!$obResDeal['UF_CRM_1614162501453']) {
-                    if(!$arFields['UF_CRM_1614162501453']) {
+                if(!$obResDeal['UF_CRM_1614278967']) {
+                    if(!$arFields['UF_CRM_1614278967']) {
                         //\Bitrix\Main\Diag\Debug::writeToFile('third cond', "dept2", "__miros.log");
                         CModule::IncludeModule('im');
                         $arFieldschat = array(
@@ -186,7 +192,7 @@ class MyEventsHandler
 //		if(!isset($arFields[$dealPlanExecuteDateFieldName]))
 //			$dealPlanExecuteDate = new DateTime($USER_FIELD_MANAGER->GetUserFieldValue('CRM_DEAL', $dealPlanExecuteDateFieldName, $dealId));
 
-            $dealPlanCloseDate = new DateTime($arFields["CLOSEDATE"]);// ?? $deal["CLOSEDATE"]);
+            $dealPlanCloseDate = new DateTime($arFields["UF_CRM_1617457299824"]);// ?? $deal["UF_CRM_1617457299824"]);
 //		if(!isset($arFields[$dealPlanExecuteDateFieldName]))
 //	            $dealPlanCloseDate = new DateTime($deal["CLOSEDATE"]);
 
@@ -203,7 +209,7 @@ class MyEventsHandler
                 return false;
             }
 
-            $dealPlanDeliveryDateUFName = Utility::GetUserFieldNameByTitle('Предполагаемая дата поставки/реализации', 'ru', 'CRM_DEAL');
+            /* $dealPlanDeliveryDateUFName = Utility::GetUserFieldNameByTitle('Предполагаемая дата поставки/реализации', 'ru', 'CRM_DEAL');
             $dealNewsMessDateUFName = Utility::GetUserFieldNameByTitle('Дата начала работы над новостью', 'ru', 'CRM_DEAL');
 
             $dealPlanDeliveryDate = $arFields[$dealPlanDeliveryDateUFName];
@@ -224,7 +230,7 @@ class MyEventsHandler
                 $USER_FIELD_MANAGER->Update('CRM_DEAL', $dealId, array(
                     $dealNewsMessDateUFName => ""
                 ));
-            }
+            } */
         }
         if($dealId){
             if($dealId > 0 && $modifiedById > 0)
@@ -354,4 +360,6 @@ class MyEventsHandler
         return $res;
 //        Bitrix\Main\Diag\Debug::writeToFile($company,"company","/debug.txt");
     }
+
+
 }
