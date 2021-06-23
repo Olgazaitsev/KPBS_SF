@@ -1,6 +1,7 @@
 <?php
 //Подключаем autoload
 use Bitrix\Main\Diag\Debug;
+use Bitrix\Disk\Internals\AttachedObjectTable;
 require_once($_SERVER["DOCUMENT_ROOT"]."/include/utility.php");
 require_once($_SERVER['DOCUMENT_ROOT'].'/local/vendor/autoload.php');
 //\Bitrix\Main\Diag\Debug::writeToFile("init", "init", "__miros.log");
@@ -11,8 +12,20 @@ AddEventHandler('crm', 'OnBeforeCrmDealUpdate', Array("MyEventsHandler", "my_OnB
 AddEventHandler('crm', 'OnBeforeCrmCompanyAdd', Array("MyEventsHandler", "my_OnBeforeCrmCompanyUpdate"));
 AddEventHandler('crm', 'OnBeforeCrmCompanyUpdate', Array("MyEventsHandler", "my_OnBeforeCrmCompanyUpdate"));
 AddEventHandler('socialnetwork', 'OnBeforeSocNetUserToGroupAdd', Array("MyEventsHandler", "my_OnBeforeSocNetUserToGroupAdd"));
+//AddEventHandler('disk', 'onAfterAddFile', Array("MyEventsHandler", "my_onAfterAddFile"));
+
 class MyEventsHandler
 {
+    /*function my_onAfterAddFile(&$file) {
+        \Bitrix\Main\Diag\Debug::writeToFile('event', "filename1", "__miros.log");
+        if($file instanceof \Bitrix\Disk\File)
+        {
+            \Bitrix\Main\Diag\Debug::writeToFile($file->getName(), "filename2", "__miros.log");
+            \Bitrix\Main\Diag\Debug::writeToFile($file->getId(), "filename2", "__miros.log");
+            //\Bitrix\Main\Diag\Debug::writeToFile($file->getEntityTyoe(), "filename3", "__miros.log");
+            //\Bitrix\Main\Diag\Debug::writeToFile($file->isEditable(), "filename4", "__miros.log");
+        }
+    }*/
 
     function my_OnBeforeTaskAdd(&$arFields){
         if($arFields["UF_CRM_TASK"][0]) {
@@ -62,15 +75,46 @@ class MyEventsHandler
     }
 
     function my_OnTaskAdd($taskId){
-        //Bitrix\Main\Diag\Debug::writeToFile("tasksadd", "upevent", "__miros.log");
+        Bitrix\Main\Diag\Debug::writeToFile($taskId, "addvent", "__miros.log");
         Utility::sendNewTaskNotification($taskId);
+        /*AttachedObjectTable::updateBatch(
+            array(
+                'ALLOW_EDIT' => 1,
+            ),
+            array(
+                'MODULE_ID' => 'tasks',
+                'ENTITY_ID' => $taskId,
+                'ALLOW_EDIT' => 0
+            )
+        );*/
     }
 
     function my_OnTaskUpdate($taskId){
-        //Bitrix\Main\Diag\Debug::writeToFile("tasksadd", "upevent", "__miros.log");
+        Bitrix\Main\Diag\Debug::writeToFile($taskId, "upevent", "__miros.log");
         Utility::sendUpdateTaskNotification($taskId);
+        $attachedList = \Bitrix\Disk\AttachedObject::getList(array(
+            'filter' => array(
+                '=MODULE_ID' => 'tasks',
+                '=ENTITY_ID' => $taskId
+                //'=ALLOW_EDIT' => 0
+            ),
+            'select' => array('ID', 'ALLOW_EDIT'),
+            //'limit' => 1,
+        ))->fetch();
+        if($attachedList['ALLOW_EDIT']==1) {
+            AttachedObjectTable::updateBatch(
+                array(
+                    'ALLOW_EDIT' => 1,
+                ),
+                array(
+                    'MODULE_ID' => 'tasks',
+                    'ENTITY_ID' => $taskId,
+                    'ALLOW_EDIT' => 0
+                )
+            );
+        }
+        /**/
     }
-
 
     function my_OnBeforeCrmDealUpdate(&$arFields){
         global $APPLICATION;
@@ -81,6 +125,7 @@ class MyEventsHandler
         $modifiedById = $arFields["MODIFY_BY_ID"];
 
         $stagesarchitect = array('FINAL_INVOICE', '1', '2', '4', '3', 'WON');
+        $stagespnr = array('1', '2', '4', '3', 'WON');
 
         // Проверка наличия компании в сделке
         $companyId = $arFields["COMPANY_ID"];
@@ -122,23 +167,40 @@ class MyEventsHandler
         if(in_array(523, $arFields['UF_CRM_1599830407833']) || in_array(523, $obResDeal['UF_CRM_1599830407833']) ||
             in_array(525, $arFields['UF_CRM_1599830407833']) || in_array(525, $obResDeal['UF_CRM_1599830407833'])) {
             //\Bitrix\Main\Diag\Debug::writeToFile('firstcond', "dept2", "__miros.log");
-            if(in_array($arFields['STAGE_ID'], $stagesarchitect) || in_array($obResDeal['STAGE_ID'], $stagesarchitect)) {
+            $exactstage = false;
+            $exactstage2 = false;
+            if($arFields['STAGE_ID'] && in_array($arFields['STAGE_ID'], $stagesarchitect)) {
+                $exactstage = true;
+            } elseif(!$arFields['STAGE_ID'] && in_array($obResDeal['STAGE_ID'], $stagesarchitect)) {
+                $exactstage = true;
+            }
+            if($exactstage) {
                 //\Bitrix\Main\Diag\Debug::writeToFile('secondcond', "dept2", "__miros.log");
                 //\Bitrix\Main\Diag\Debug::writeToFile($obResDeal['UF_CRM_1614278967'], "dept2", "__miros.log");
                 //\Bitrix\Main\Diag\Debug::writeToFile($arFields['UF_CRM_1614278967'], "dept2", "__miros.log");
                 // тут меняем код ПП и его значения = нет в соответствие с продом
-                $errormsg = '';
+                $errorfield = [];
                 if (!$arFields['UF_CRM_1614278967']) {
                     if(!$obResDeal['UF_CRM_1614278967']) {
-                        $errormsg = "Поле проверка архитектора должно быть заполнено.";
+                        $errorfield[] = "&quot;Проверка архитектора&quot;";
                     }
                 }
-                if (!$arFields['UF_CRM_1611675525741']) {
+                if($arFields['STAGE_ID'] && in_array($arFields['STAGE_ID'], $stagespnr)) {
+                    $exactstage2 = true;
+                } elseif(!$arFields['STAGE_ID'] && in_array($obResDeal['STAGE_ID'], $stagespnr)) {
+                    $exactstage2 = true;
+                }
+                if ($exactstage2 && !$arFields['UF_CRM_1611675525741']) {
                     if(!$obResDeal['UF_CRM_1611675525741']) {
-                        $errormsg .= "Поле ПНР должно быть заполнено";
+                        $errorfield[] = "&quot;ПНР&quot;";
                     }
                 }
-                if($errormsg) {
+                if($errorfield) {
+                    if(count($errorfield)==1) {
+                        $errormsg = "Чтобы сделка сохранила изменения поле ".current($errorfield)." должно быть заполнено!";
+                    } else {
+                        $errormsg = "Чтобы сделка сохранила изменения поля ".implode(",", $errorfield)." должны быть заполнены!";
+                    }
                     $arFields['RESULT_MESSAGE'] = $errormsg;
                     CModule::IncludeModule('im');
                     $arFieldschat = array(
