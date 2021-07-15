@@ -124,8 +124,8 @@ class MyEventsHandler
         $dealId = $arFields["ID"];
         $modifiedById = $arFields["MODIFY_BY_ID"];
 
-        $stagesarchitect = array('FINAL_INVOICE', '1', '2', '4', '3', 'WON');
-        $stagespnr = array('1', '2', '4', '3', 'WON');
+        $stagesarchitect = array('FINAL_INVOICE', '1', '2', '3', 'WON');
+        $stagespnr = array('1', '2', '3', 'WON');
 
         // Проверка наличия компании в сделке
         $companyId = $arFields["COMPANY_ID"];

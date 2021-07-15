@@ -182,7 +182,7 @@ class Signal extends Controller
             } else {
                 $KVqkach = 1;
             }
-            $KVqrate = $KVqweight*$KVqkach;
+            $KVqrate = round($KVqweight*$KVqkach,2);
             $KVavg = round($KVavg/$countalldays,2);
             if($KVavg<=20) {
                 $KVavgkach = 0;
@@ -471,7 +471,7 @@ class Signal extends Controller
             } else {
                 $KVqkach = 1;
             }
-            $KVqrate = $KVqweight*$KVqkach;
+            $KVqrate = round($KVqweight*$KVqkach,2);
             $KVavg = round($KVavg/$countalldays,2);
             if($KVavg<=20) {
                 $KVavgkach = 0;
