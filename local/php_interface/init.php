@@ -140,7 +140,7 @@ class MyEventsHandler
         CModule::IncludeModule('crm');
         $arFilterDeal = array('ID'=>$dealId);
         // тут меняем код 'UF_CRM_1614162501453' на код проверки архитектора на бое
-        $arSelectDeal = array('ID', 'STAGE_ID', 'UF_CRM_1611675525741', 'UF_CRM_1611675557650', 'UF_CRM_1599830407833', 'UF_CRM_1614278967');
+        $arSelectDeal = array('ID', 'STAGE_ID', 'UF_CRM_1611675525741', 'UF_CRM_1611675557650', 'UF_CRM_1599830407833', 'UF_CRM_1614278967', 'UF_CRM_1617457299824', 'UF_CRM_1589453961052', 'UF_CRM_1589454013038');
 
         $obResDeal = CCrmDeal::GetListEx(false,$arFilterDeal,false,false,$arSelectDeal)->Fetch();
         // проверка архитектора
@@ -250,21 +250,39 @@ class MyEventsHandler
 
         global $USER_FIELD_MANAGER;
         if($dealId > 0 && $modifiedById > 0) {
-            $dealContractSignPlanDateFieldName = Utility::GetUserFieldNameByTitle('Целевая дата подписания договора', 'ru', 'CRM_DEAL');
-            $dealContractSignPlanDate = new DateTime($arFields[$dealContractSignPlanDateFieldName]); // ?? $USER_FIELD_MANAGER->GetUserFieldValue('CRM_DEAL', $dealContractSignPlanDateFieldName, $dealId));
+            //$dealContractSignPlanDateFieldName = Utility::GetUserFieldNameByTitle('Целевая дата подписания договора', 'ru', 'CRM_DEAL');
+            if($arFields['UF_CRM_1589453961052']) {
+                $dealContractSignPlanDate = new DateTime($arFields['UF_CRM_1589453961052']);
+            } else {
+                if($obResDeal['UF_CRM_1589453961052']) {
+                    $dealContractSignPlanDate = new DateTime($obResDeal['UF_CRM_1589453961052']);
+                }
+            }
+             // ?? $USER_FIELD_MANAGER->GetUserFieldValue('CRM_DEAL', $dealContractSignPlanDateFieldName, $dealId));
+            //		if(!isset($arFields[$dealContractSignPlanDateFieldName]))
+            //			$dealContractSignPlanDate = new DateTime($USER_FIELD_MANAGER->GetUserFieldValue('CRM_DEAL', $dealContractSignPlanDateFieldName, $dealId));
+            //$dealPlanExecuteDateFieldName = Utility::GetUserFieldNameByTitle('Предполагаемая дата поставки/реализации', 'ru', 'CRM_DEAL');
+            if($arFields['UF_CRM_1589454013038']) {
+                $dealPlanExecuteDate = new DateTime($arFields['UF_CRM_1589454013038']);
+            } else {
+                if($obResDeal['UF_CRM_1589454013038']) {
+                    $dealPlanExecuteDate = new DateTime($obResDeal['UF_CRM_1589454013038']);
+                }
+            }
 
-//		if(!isset($arFields[$dealContractSignPlanDateFieldName]))
-//			$dealContractSignPlanDate = new DateTime($USER_FIELD_MANAGER->GetUserFieldValue('CRM_DEAL', $dealContractSignPlanDateFieldName, $dealId));
-
-            $dealPlanExecuteDateFieldName = Utility::GetUserFieldNameByTitle('Предполагаемая дата поставки/реализации', 'ru', 'CRM_DEAL');
-            $dealPlanExecuteDate = new DateTime($arFields[$dealPlanExecuteDateFieldName]); // ?? $USER_FIELD_MANAGER->GetUserFieldValue('CRM_DEAL', $dealPlanExecuteDateFieldName, $dealId));
-
-//		if(!isset($arFields[$dealPlanExecuteDateFieldName]))
-//			$dealPlanExecuteDate = new DateTime($USER_FIELD_MANAGER->GetUserFieldValue('CRM_DEAL', $dealPlanExecuteDateFieldName, $dealId));
-
-            $dealPlanCloseDate = new DateTime($arFields["UF_CRM_1617457299824"]);// ?? $deal["UF_CRM_1617457299824"]);
-//		if(!isset($arFields[$dealPlanExecuteDateFieldName]))
-//	            $dealPlanCloseDate = new DateTime($deal["CLOSEDATE"]);
+            //$dealPlanExecuteDate = new DateTime($arFields['UF_CRM_1589454013038']); // ?? $USER_FIELD_MANAGER->GetUserFieldValue('CRM_DEAL', $dealPlanExecuteDateFieldName, $dealId));
+            //		if(!isset($arFields[$dealPlanExecuteDateFieldName]))
+            //			$dealPlanExecuteDate = new DateTime($USER_FIELD_MANAGER->GetUserFieldValue('CRM_DEAL', $dealPlanExecuteDateFieldName, $dealId));
+            if($arFields['UF_CRM_1617457299824']) {
+                $dealPlanCloseDate = new DateTime($arFields['UF_CRM_1617457299824']);
+            } else {
+                if($obResDeal['UF_CRM_1617457299824']) {
+                    $dealPlanCloseDate = new DateTime($obResDeal['UF_CRM_1617457299824']);
+                }
+            }
+            //$dealPlanCloseDate = new DateTime($arFields["UF_CRM_1617457299824"]);// ?? $deal["UF_CRM_1617457299824"]);
+            //		if(!isset($arFields[$dealPlanExecuteDateFieldName]))
+            //	            $dealPlanCloseDate = new DateTime($deal["CLOSEDATE"]);
 
 
             if(isset($dealContractSignPlanDate) && $dealContractSignPlanDate != '' && isset($dealPlanExecuteDate) && $dealPlanExecuteDate != '' && $dealContractSignPlanDate > $dealPlanExecuteDate){
