@@ -1,5 +1,5 @@
 <?php
-//Подключаем autoload
+//Подключаем autoload|||||
 use Bitrix\Main\Diag\Debug;
 use Bitrix\Disk\Internals\AttachedObjectTable;
 require_once($_SERVER["DOCUMENT_ROOT"]."/include/utility.php");
